@@ -29,7 +29,7 @@
             <h1 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wider text-center">Admin Access</h1>
             <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8 text-center">Secure Management Hub</p>
             
-            <form id="admin-login-form" onsubmit="return window.checkAdmin(event)">
+            <form id="admin-login-form">
                 <div class="space-y-6">
                     <input required type="password" id="admin-pass" placeholder="Authorization Key" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all">
                     <button type="submit" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl shadow-arc-blue/20">
@@ -58,17 +58,17 @@
         </nav>
 
         <div class="max-w-7xl mx-auto w-full p-8 flex-1">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 text-left">
                 <div>
                     <h1 class="text-5xl font-black text-slate-900 tracking-tighter">Candidate Log</h1>
-                    <p class="text-slate-400 mt-2 font-medium">Local synchronization of assessment results from this device.</p>
+                    <p class="text-slate-400 mt-2 font-medium">Local results stored on this device from the assessment portal.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <!-- Main Feed -->
                 <div class="lg:col-span-3 space-y-4">
-                    <div id="submissions-list" class="space-y-4">
+                    <div id="submissions-list" class="space-y-4 text-left">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -92,11 +92,11 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Detail Modal -->
     <div id="detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in">
             <div class="p-10 border-b border-slate-50 flex justify-between items-start bg-slate-50/50">
-                <div>
+                <div class="text-left">
                     <h2 id="modal-name" class="text-3xl font-black text-slate-900 tracking-tight">Candidate Name</h2>
                     <p id="modal-email" class="text-xs font-bold text-arc-blue uppercase tracking-widest mt-3">email@example.com</p>
                 </div>
@@ -104,36 +104,38 @@
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
-            <div id="modal-content" class="p-10 overflow-y-auto space-y-8"></div>
+            <div id="modal-content" class="p-10 overflow-y-auto space-y-8 text-left"></div>
         </div>
     </div>
 
     <script>
         const DB_KEY = "ARC_EXAM_RESULTS";
 
-        // Global check function
-        window.checkAdmin = function(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
+        // Use standard event listener to prevent scope issues
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('admin-login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const passInput = document.getElementById('admin-pass');
+                    const pass = passInput.value;
+                    
+                    if (pass === 'A2c5ySt3m5ExamR35u1ts') {
+                        document.getElementById('view-login').classList.remove('active');
+                        document.getElementById('view-dashboard').classList.add('active');
+                        initDashboard();
+                    } else {
+                        const err = document.getElementById('login-err');
+                        err.classList.remove('hidden');
+                        passInput.value = '';
+                        setTimeout(() => err.classList.add('hidden'), 3000);
+                    }
+                });
             }
-            
-            const passInput = document.getElementById('admin-pass');
-            const pass = passInput.value;
-            
-            // Secure key check
-            if (pass === 'A2c5ySt3m5ExamR35u1ts') {
-                document.getElementById('view-login').classList.remove('active');
-                document.getElementById('view-dashboard').classList.add('active');
-                initDashboard();
-            } else {
-                const err = document.getElementById('login-err');
-                err.classList.remove('hidden');
-                passInput.value = '';
-                setTimeout(() => err.classList.add('hidden'), 3000);
-            }
-            return false; // Prevent form action
-        };
+            lucide.createIcons();
+        });
 
         function initDashboard() {
             const list = document.getElementById('submissions-list');
@@ -142,7 +144,7 @@
             
             list.innerHTML = '';
             if (data.length === 0) {
-                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">No local candidate results found yet.</div>';
+                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">No local candidate results found on this device.</div>';
                 lucide.createIcons();
                 return;
             }
@@ -161,9 +163,9 @@
                         </div>
                     </div>
                     <div class="text-right flex items-center gap-10">
-                        <div class="hidden md:block">
-                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">${res.levelTitle}</p>
-                            <p class="text-2xl font-black ${res.passed ? 'text-emerald-600' : 'text-slate-900'}">${res.score}%</p>
+                        <div class="hidden md:block text-right">
+                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle}</p>
+                            <p class="text-2xl font-black ${res.passed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score}%</p>
                         </div>
                         <button onclick='window.viewDetails(${idx})' class="bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark transition-all shadow-lg">
                             <i data-lucide="eye" class="w-5 h-5"></i>
@@ -197,10 +199,10 @@
                     <div class="p-8 bg-arc-blue/5 rounded-[2.5rem] border-2 border-arc-blue/10 space-y-4 text-left">
                         <p class="text-xs font-black text-arc-blue uppercase tracking-[0.2em]">Authorized Link (Module ${res.levelId + 1})</p>
                         <div class="flex gap-3">
-                            <input readonly id="copy-inp" value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500">
-                            <button onclick="copyToClipboard()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark">Copy</button>
+                            <input readonly id="copy-inp" value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500 focus:outline-none">
+                            <button onclick="copyToClipboard()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark">Copy Link</button>
                         </div>
-                        <p class="text-[10px] text-slate-400">Send this link to the candidate to unlock their next engineering module.</p>
+                        <p class="text-[10px] text-slate-400">Provide this link to the candidate to authorize the next engineering module.</p>
                     </div>
                 ` : ''}
                 <div class="space-y-4 text-left">
@@ -208,9 +210,9 @@
                     <div class="space-y-3">
                         ${res.details.map(log => `
                             <div class="p-5 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'}">
-                                <p class="text-sm font-bold text-slate-800 mb-2 leading-tight">${log.q}</p>
-                                <p class="text-xs font-semibold ${log.status === 'Correct' ? 'text-emerald-600' : 'text-red-600'}">Answered: ${log.a}</p>
-                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 italic">Expected: ${log.correctVal}</p>` : ''}
+                                <p class="text-sm font-bold text-slate-800 mb-2 leading-tight text-left">${log.q}</p>
+                                <p class="text-xs font-semibold ${log.status === 'Correct' ? 'text-emerald-600' : 'text-red-600'} text-left">Answered: ${log.a}</p>
+                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 italic text-left">Expected Response: ${log.correctVal}</p>` : ''}
                             </div>`).join('')}
                     </div>
                 </div>
@@ -224,11 +226,10 @@
             const el = document.getElementById('copy-inp');
             el.select();
             document.execCommand('copy');
-            alert("Authorization Link Copied.");
+            alert("Authorized progression link copied to clipboard.");
         };
 
         window.onkeydown = function(e) { if(e.key === "Escape") closeModal(); };
-        lucide.createIcons();
     </script>
 </body>
 </html>
