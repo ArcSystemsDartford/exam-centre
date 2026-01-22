@@ -30,7 +30,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal selection:text-white">
 
-    <!-- Login View (Using a wrapper instead of <form> to prevent accidental ? redirects) -->
+    <!-- Login View -->
     <div id="view-login" class="view active min-h-screen flex items-center justify-center bg-arc-dark p-6 text-center">
         <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center fade-in">
             <div class="mb-10 text-center">
@@ -88,7 +88,7 @@
                 <!-- Sidebar Metrics -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28 text-left">
-                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left">Metrics</h3>
+                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left font-bold tracking-[0.2em]">Summary</h3>
                         <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 mb-8 text-left">
                             <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 text-left">Total Records</p>
                             <p id="stat-total" class="text-4xl font-black text-arc-blue text-left">0</p>
@@ -129,36 +129,46 @@
     </div>
 
     <script>
+        // Use EXACT same keys as the main portal
         const DB_KEY = "ARC_EXAM_RESULTS";
         const AUTH_KEY = "A2c5ySt3m5ExamR35u1ts";
 
-        // Global function for the check
+        // Global check function - attached to window for absolute reliability
         window.checkAdmin = function() {
             const passInput = document.getElementById('admin-pass');
-            const pass = passInput.value.trim();
+            const passValue = passInput.value.trim();
             
-            if (pass === AUTH_KEY) {
-                document.getElementById('view-login').classList.remove('active');
+            if (passValue === AUTH_KEY) {
+                // Success: Switch views directly
+                document.getElementById('view-login').style.display = 'none';
+                document.getElementById('view-dashboard').style.display = 'flex';
                 document.getElementById('view-dashboard').classList.add('active');
+                
+                // Initialize the dashboard data
                 initDashboard();
             } else {
+                // Failure: Show error
                 const err = document.getElementById('login-err');
                 err.classList.remove('hidden');
                 passInput.value = '';
-                setTimeout(() => err.classList.add('hidden'), 3000);
+                setTimeout(() => { if(err) err.classList.add('hidden'); }, 3000);
             }
         };
 
         function initDashboard() {
             const list = document.getElementById('submissions-list');
-            const data = JSON.parse(localStorage.getItem(DB_KEY) || "[]").reverse();
+            const dataStr = localStorage.getItem(DB_KEY);
+            const data = JSON.parse(dataStr || "[]").reverse();
+            
             document.getElementById('stat-total').textContent = data.length;
             
             list.innerHTML = '';
+            
             if (data.length === 0) {
                 list.innerHTML = `
                     <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100">
                         <p class="text-slate-400 font-bold uppercase tracking-widest text-xs text-center">No local results found on this machine.</p>
+                        <p class="text-slate-300 text-[10px] mt-2 text-center uppercase tracking-tighter">Results are stored in the browser's LocalStorage</p>
                     </div>`;
                 lucide.createIcons();
                 return;
@@ -173,14 +183,14 @@
                             <i data-lucide="${res.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
                         </div>
                         <div class="text-left">
-                            <h4 class="text-lg font-black text-slate-800 leading-tight text-left">${res.candidateName}</h4>
-                            <p class="text-xs font-bold text-slate-400 mt-0.5 text-left">${res.candidateEmail}</p>
+                            <h4 class="text-lg font-black text-slate-800 leading-tight text-left">${res.candidateName || 'Unknown'}</h4>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5 text-left">${res.candidateEmail || 'No Email'}</p>
                         </div>
                     </div>
                     <div class="text-right flex items-center gap-10 text-right">
                         <div class="hidden md:block text-right">
-                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle}</p>
-                            <p class="text-2xl font-black ${res.passed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score}%</p>
+                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle || 'Module'}</p>
+                            <p class="text-2xl font-black ${res.passed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score || 0}%</p>
                         </div>
                         <button onclick='window.viewDetails(${idx})' class="bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark transition-all shadow-lg text-center">
                             <i data-lucide="eye" class="w-5 h-5 text-center"></i>
@@ -192,48 +202,50 @@
         }
 
         window.viewDetails = function(index) {
-            const data = JSON.parse(localStorage.getItem(DB_KEY) || "[]").reverse();
+            const dataStr = localStorage.getItem(DB_KEY);
+            const data = JSON.parse(dataStr || "[]").reverse();
             const res = data[index];
+            
             document.getElementById('modal-name').textContent = res.candidateName;
             document.getElementById('modal-email').textContent = res.candidateEmail;
             const content = document.getElementById('modal-content');
             
-            // Link to authorization URL
-            const baseUrl = "https://arcsystemsdartford.github.io/exam-centre/";
-            const nextLink = `${baseUrl}?level=${res.levelId + 1}`;
+            // Build the next progression link
+            const baseUrl = window.location.origin + window.location.pathname.replace('admin.html', '').replace('admin', '');
+            const nextLink = `${baseUrl}?level=${(res.levelId || 1) + 1}`;
 
             content.innerHTML = `
                 <div class="grid grid-cols-2 gap-6 text-left">
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner text-left">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left">Final Result</p>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left font-bold">Outcome</p>
                         <p class="text-2xl font-black ${res.passed ? 'text-emerald-500' : 'text-red-500'} text-left">${res.passed ? 'PASSED' : 'FAILED'}</p>
                     </div>
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner text-left">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left">Logged At</p>
-                        <p class="text-xs font-bold text-slate-600 text-left">${new Date(res.timestamp).toLocaleString()}</p>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left font-bold">Recorded</p>
+                        <p class="text-xs font-bold text-slate-600 text-left">${res.timestamp ? new Date(res.timestamp).toLocaleString() : 'N/A'}</p>
                     </div>
                 </div>
                 ${res.passed && res.levelId < 3 ? `
                     <div class="p-8 bg-arc-blue/5 rounded-[2.5rem] border-2 border-arc-blue/10 space-y-4 text-left">
-                        <p class="text-xs font-black text-arc-blue uppercase tracking-[0.2em] text-left">Authorized Link Generator (Level ${res.levelId + 1})</p>
+                        <p class="text-xs font-black text-arc-blue uppercase tracking-[0.2em] text-left">Authorized Progression Link (Level ${(res.levelId || 1) + 1})</p>
                         <div class="flex gap-3 text-left">
                             <input readonly id="copy-inp" value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500 focus:outline-none text-left">
                             <button onclick="copyToClipboard()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark shadow-md text-center">Copy</button>
                         </div>
-                        <p class="text-[10px] text-slate-400 font-medium text-left italic">Provide this link to the candidate to authorize their next evaluation tier.</p>
+                        <p class="text-[10px] text-slate-400 font-medium text-left italic">Provide this link to the candidate to unlock their next tier.</p>
                     </div>
                 ` : ''}
                 <div class="space-y-4 text-left">
-                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em] text-left">Answer Breakdown</p>
+                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em] text-left font-bold">Detailed Response Breakdown</p>
                     <div class="space-y-3 text-left">
-                        ${res.details.map(log => `
+                        ${(res.details || []).map(log => `
                             <div class="p-5 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'} text-left">
                                 <p class="text-sm font-bold text-slate-800 mb-2 leading-tight text-left">${log.q}</p>
                                 <div class="flex items-center gap-2 text-left">
                                     <span class="text-[9px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'} text-left">${log.status}</span>
-                                    <span class="text-xs font-semibold text-slate-600 text-left">Answer: ${log.a}</span>
+                                    <span class="text-xs font-semibold text-slate-600 text-left">Selected: ${log.a}</span>
                                 </div>
-                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 font-medium text-left italic">Expected: ${log.correctVal}</p>` : ''}
+                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 font-medium text-left italic">Reference Answer: ${log.correctVal}</p>` : ''}
                             </div>`).join('')}
                     </div>
                 </div>
@@ -248,11 +260,16 @@
             const el = document.getElementById('copy-inp');
             el.select();
             document.execCommand('copy');
-            alert("Authorized Progression Link copied to clipboard.");
+            alert("Progression Link copied to clipboard.");
         };
 
-        // Initialize Icons
-        lucide.createIcons();
+        // Esc key listener
+        window.onkeydown = function(e) { if(e.key === "Escape") closeModal(); };
+
+        // Auto-run icons on load
+        window.onload = function() {
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
