@@ -34,7 +34,7 @@
         
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -53,13 +53,14 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal selection:text-white flex flex-col font-sans">
+<body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal selection:text-white flex flex-col font-sans text-left">
 
-    <!-- Global Navigation (Hidden on Registration/Processing) -->
+    <!-- Global Navigation -->
     <nav id="global-nav" class="hidden fixed top-0 left-0 w-full bg-white/90 backdrop-blur-xl z-50 border-b border-slate-100 px-6 py-4 shadow-sm text-left">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="image_b6e059.png" alt="Arc Systems Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
+                <!-- Navigation Logo -->
+                <img src="arc.jpg" alt="Arc Systems Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
                 <div class="h-6 w-[1px] bg-slate-200 hidden md:block"></div>
                 <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block">Engineering Evaluation Portal</span>
             </div>
@@ -73,8 +74,8 @@
                     <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-arc-blue transition-transform"></i>
                 </button>
                 
-                <div id="user-dropdown" class="absolute right-0 mt-3 w-64 bg-white border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden fade-in">
-                    <div class="p-5 border-b border-slate-50 bg-slate-50/50">
+                <div id="user-dropdown" class="absolute right-0 mt-3 w-64 bg-white border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden fade-in text-left">
+                    <div class="p-5 border-b border-slate-50 bg-slate-50/50 text-left">
                         <p id="dropdown-full-name" class="text-slate-900 font-black truncate text-sm">Candidate Name</p>
                         <p id="dropdown-email" class="text-slate-500 text-[10px] uppercase font-bold tracking-wider truncate">email@example.com</p>
                     </div>
@@ -95,6 +96,10 @@
             <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-arc-blue to-arc-teal"></div>
             
             <div class="mb-14">
+                <!-- Added logo here -->
+                <div class="flex justify-center mb-10">
+                    <img src="arc.jpg" alt="Arc Systems Logo" class="h-24 w-auto object-contain" onerror="this.src='https://placehold.co/400x120?text=Arc+Systems'">
+                </div>
                 <h1 class="text-5xl font-black text-slate-900 tracking-tighter mb-4 uppercase leading-tight">Engineering Portal</h1>
                 <p class="text-slate-500 text-xl leading-relaxed max-w-2xl mx-auto font-medium">Identify yourself to begin or resume your technical assessments.</p>
             </div>
@@ -159,7 +164,7 @@
 
         <div class="mt-auto pt-16 border-t border-slate-200 text-center text-slate-400 text-xs leading-relaxed w-full fade-in">
             <p class="font-black mb-4 text-slate-500 uppercase tracking-[0.5em]">Administration & Enterprise Support</p>
-            <div class="flex flex-wrap justify-center gap-x-16 font-black text-arc-blue text-lg">
+            <div class="flex flex-wrap justify-center gap-x-16 font-black text-arc-blue text-lg text-left">
                 <span>adam.ayliffe@arcsystems.co.uk</span>
                 <span>daniel.muckle@arcsystems.co.uk</span>
             </div>
@@ -173,8 +178,7 @@
                 <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Overview
             </button>
             <div id="intro-content" class="bg-white rounded-[4.5rem] p-12 md:p-24 border border-slate-100 shadow-2xl relative overflow-hidden text-left">
-                <div class="absolute top-0 right-0 w-80 h-80 bg-arc-blue/5 rounded-full -mr-40 -mt-40 opacity-50"></div>
-                <!-- Content injected via JS -->
+                <div class="absolute top-0 right-0 w-80 h-80 bg-arc-blue/5 rounded-full -mr-40 -mt-40 opacity-50 text-left"></div>
             </div>
         </div>
     </div>
@@ -182,14 +186,14 @@
     <!-- Exam View -->
     <div id="view-exam" class="view min-h-screen flex-col items-center p-8 md:p-16 content-area pb-20 text-left">
         <div class="max-w-5xl w-full fade-in text-left">
-            <div class="flex justify-between items-end mb-12">
+            <div class="flex justify-between items-end mb-12 text-left">
                 <div class="flex-1 mr-16 text-left">
                     <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Evaluation Validation Protocol</h2>
                     <div class="h-5 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner border-4 border-white">
                         <div id="exam-progress-bar" class="h-full bg-gradient-to-r from-arc-blue to-arc-teal transition-all duration-700" style="width: 0%"></div>
                     </div>
                 </div>
-                <div id="exam-counter" class="bg-white px-10 py-5 rounded-[2rem] border border-slate-100 font-black text-arc-blue shadow-xl text-2xl">1 / 15</div>
+                <div id="exam-counter" class="bg-white px-10 py-5 rounded-[2rem] border border-slate-100 font-black text-arc-blue shadow-xl text-2xl text-left">1 / 15</div>
             </div>
             <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden text-left">
                 <div class="absolute top-0 left-0 w-4 h-full bg-arc-blue"></div>
@@ -210,7 +214,7 @@
 
     <!-- Processing View -->
     <div id="view-processing" class="view min-h-screen items-center justify-center p-4 text-center">
-        <div class="text-center space-y-12">
+        <div class="text-center space-y-12 text-center">
             <div class="relative inline-block scale-[2.5]">
                 <div class="w-16 h-16 border-[6px] border-arc-blue/10 rounded-full"></div>
                 <div class="w-16 h-16 border-[6px] border-arc-teal border-t-transparent rounded-full animate-spin absolute top-0"></div>
@@ -228,11 +232,11 @@
                     <i data-lucide="check-circle" class="w-32 h-32 text-emerald-500 stroke-[2px]"></i>
                 </div>
             </div>
-            <div class="space-y-6">
+            <div class="space-y-6 text-center">
                 <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Module Verified</h3>
                 <p class="text-slate-500 text-3xl font-medium max-w-2xl mx-auto leading-relaxed">Your results have been processed and stored in the Arc Systems technical record.</p>
-                <div class="inline-block bg-slate-50 px-8 py-3 rounded-2xl text-sm font-black text-slate-400 mt-8 border border-slate-100 uppercase tracking-widest">
-                    Primary Recipient: daniel.muckle@arcsystems.co.uk
+                <div class="inline-block bg-slate-50 px-8 py-3 rounded-2xl text-sm font-black text-slate-400 mt-8 border border-slate-100 uppercase tracking-widest leading-relaxed">
+                    Recipients: daniel.muckle@arcsystems.co.uk & adam.ayliffe@arcsystems.co.uk
                 </div>
             </div>
             <button onclick="window.showDashboard()" class="w-full bg-arc-blue text-white py-8 rounded-[2.5rem] text-3xl font-black hover:bg-arc-dark transition-all shadow-2xl shadow-arc-blue/30 flex items-center justify-center gap-6">
@@ -262,9 +266,7 @@
         const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm"; 
         const EMAILJS_SERVICE_ID = "service_bphlojw"; 
         const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; 
-        
-        // Primary recipient updated to Daniel Muckle
-        const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
+        const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk, adam.ayliffe@arcsystems.co.uk";
 
         if (EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
 
@@ -274,27 +276,16 @@
             3: { title: "3rd line and escalations exam", icon: "award", description: "Advanced assessment regarding enterprise-grade infrastructure security, virtualization, and complex architecture.", objectives: ["Hypervisor Topology", "AES Data Standards", "Disaster Recovery", "Cloud Architecture"], passScore: 80, questions: [{ id: 1, text: "Which of these is a symmetric encryption algorithm?", options: ["RSA", "ECC", "AES", "Diffie-Hellman"], correct: 2 }, { id: 2, text: "In the context of Docker, what is a 'Container'?", options: ["A hardware server", "A lightweight, standalone executable package", "A physical shipping unit", "A type of database"], correct: 1 }, { id: 3, text: "What is 'Zero Trust' architecture?", options: ["A network with no security", "Assuming every access request is a threat", "Only trusting local employees", "Removing all firewalls"], correct: 1 }, { id: 4, text: "Which protocol is used for managing and monitoring network devices?", options: ["SNMP", "BGP", "SSH", "ICMP"], correct: 0 }, { id: 5, text: "What is a 'Brute Force' attack?", options: ["Physically breaking a server", "Systematically trying all possible passwords", "Sending too many emails", "Cutting a fiber optic cable"], correct: 1 }, { id: 6, text: "In SQL, what does the 'JOIN' clause do?", options: ["Deletes two tables", "Combines rows from two or more tables", "Creates a new database", "Restarts the server"], correct: 1 }, { id: 7, text: "What is 'Latent Semantic Indexing' used for?", options: ["Network routing", "Search engine optimization/data retrieval", "Hard drive formatting", "CPU overclocking"], correct: 1 }, { id: 8, text: "Which port does SSH use by default?", options: ["21", "22", "23", "25"], correct: 1 }, { id: 9, text: "What is the 'Blue Screen of Death' (BSOD) usually an indicator of?", options: ["A software update is ready", "A critical system error or hardware failure", "The monitor is broken", "The internet is disconnected"], correct: 1 }, { id: 10, text: "What does 'IOPS' measure?", options: ["Internet Output Per Second", "Input/Output Operations Per Second", "Internal Operating Processing System", "Integrated Optical Power System"], correct: 1 }, { id: 11, text: "What is the primary difference between IPv4 and IPv6?", options: ["Speed", "Number of available addresses", "The type of cables used", "Security levels"], correct: 1 }, { id: 12, text: "Which of these is a 'Type 1' Hypervisor?", options: ["Oracle VirtualBox", "VMware ESXi", "VMware Workstation", "Microsoft Virtual PC"], correct: 1 }, { id: 13, text: "What is a 'Salting' in the context of password security?", options: ["Adding random data to a password before hashing", "Storing passwords in plain text", "Sharing passwords with admins", "Changing passwords every day"], correct: 0 }, { id: 14, text: "In BGP (Border Gateway Protocol), what is an 'Autonomous System'?", options: ["A self-driving server", "A collection of IP prefixes under one entity", "A computer with no OS", "An AI-managed router"], correct: 1 }, { id: 15, text: "What is 'DDoS'?", options: ["Distributed Denial of Service", "Data Delivery over System", "Direct Digital Operating System", "Dual Disk Operating System"], correct: 0 }] }
         };
 
-        let state = {
-            userInfo: { name: '', email: '' },
-            unlockedLevel: 1, 
-            completedLevels: [],
-            activeLevelId: null,
-            currentQuestionIndex: 0,
-            answers: {}
-        };
+        let state = { userInfo: { name: '', email: '' }, unlockedLevel: 1, completedLevels: [], activeLevelId: null, currentQuestionIndex: 0, answers: {} };
 
-        // --- View Controls ---
+        // --- View Logic ---
         window.switchView = function(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById(`view-${viewId}`);
             if (target) target.classList.add('active');
-            
             const nav = document.getElementById('global-nav');
-            if (viewId === 'registration' || viewId === 'processing') {
-                nav.classList.add('hidden');
-            } else {
-                nav.classList.remove('hidden');
-            }
+            if (viewId === 'registration' || viewId === 'processing') nav.classList.add('hidden');
+            else nav.classList.remove('hidden');
             lucide.createIcons();
             window.scrollTo(0, 0);
         };
@@ -311,77 +302,26 @@
         };
 
         window.showDashboard = function() {
-            const list = document.getElementById('level-list');
-            list.innerHTML = '';
-            
+            const list = document.getElementById('level-list'); list.innerHTML = '';
             for (let id = 1; id <= state.unlockedLevel; id++) {
-                const level = EXAM_DATA[id];
-                const isCompleted = state.completedLevels.includes(id);
-                
+                const level = EXAM_DATA[id]; const isCompleted = state.completedLevels.includes(id);
                 const card = document.createElement('div');
                 card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in text-left`;
                 card.onclick = () => window.showIntro(id);
-                
-                card.innerHTML = `
-                    <div class="flex items-center gap-12 text-left">
-                        <div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 ${isCompleted ? 'bg-emerald-100 text-emerald-600 shadow-lg' : 'bg-arc-blue/5 text-arc-blue shadow-lg'}">
-                            <i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i>
-                        </div>
-                        <div class="text-left">
-                            <h2 class="text-5xl font-black text-slate-900 tracking-tighter text-left">${level.title}</h2>
-                            <p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium leading-relaxed text-left">${level.description}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 text-left">
-                        <div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform text-left">
-                            ${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                        </div>
-                    </div>
-                    ${isCompleted ? '<div class="absolute top-0 right-0 bg-emerald-500 text-white text-[11px] font-black uppercase px-12 py-4 rounded-bl-[2.5rem] tracking-widest shadow-lg">Verified</div>' : ''}
-                `;
+                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 ${isCompleted ? 'bg-emerald-100 text-emerald-600 shadow-lg' : 'bg-arc-blue/5 text-arc-blue shadow-lg'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div class="text-left"><h2 class="text-5xl font-black text-slate-900 tracking-tighter text-left leading-tight">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium leading-relaxed text-left">${level.description}</p></div></div><div class="flex items-center gap-4 text-left"><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform text-left">${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div></div>${isCompleted ? '<div class="absolute top-0 right-0 bg-emerald-500 text-white text-[11px] font-black uppercase px-12 py-4 rounded-bl-[2.5rem] tracking-widest shadow-lg">Verified</div>' : ''}`;
                 list.appendChild(card);
             }
             window.switchView('dashboard');
         };
 
         window.showIntro = function(levelId) {
-            state.activeLevelId = levelId;
-            const level = EXAM_DATA[levelId];
-            const isCompleted = state.completedLevels.includes(levelId);
+            state.activeLevelId = levelId; const level = EXAM_DATA[levelId]; const isCompleted = state.completedLevels.includes(levelId);
             const container = document.getElementById('intro-content');
-            
-            container.innerHTML = `
-                <div class="flex items-center gap-6 mb-12 text-left">
-                    <span class="bg-arc-blue text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.4em] shadow-xl shadow-arc-blue/20">Protocol Stream</span>
-                    ${isCompleted ? `<span class="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-3 shadow-lg shadow-emerald-50"><i data-lucide="check-circle" class="w-5 h-5"></i> Entry Logged</span>` : ''}
-                </div>
-                <h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter leading-none text-left">${level.title}</h1>
-                <p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium text-left max-w-4xl">${level.description}</p>
-                <div class="grid md:grid-cols-2 gap-16 mb-24 text-left">
-                    <div class="space-y-10 text-left">
-                        <h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="target" class="text-arc-blue w-8 h-8"></i> Module Syllabus</h3>
-                        <ul class="space-y-6 text-left">
-                            ${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl text-left"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0 shadow-lg shadow-arc-teal/30"></div> ${obj}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="space-y-10 text-left">
-                        <h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="shield-check" class="text-arc-blue w-8 h-8"></i> Security Notice</h3>
-                        <div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-2xl shadow-slate-100/50 text-left">
-                            <p class="text-lg text-slate-500 italic leading-loose font-medium text-left">Session progress is authenticated against candidate ${state.userInfo.email}. A benchmark of 80% is required to proceed to secondary evaluation tiers.</p>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue transition-all shadow-2xl flex items-center justify-center gap-6 group">
-                    <i data-lucide="${isCompleted ? 'refresh-cw' : 'zap'}" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> 
-                    ${isCompleted ? 'Re-attempt Logic' : 'Initiate Module'}
-                </button>
-            `;
+            container.innerHTML = `<div class="flex items-center gap-6 mb-12 text-left"><span class="bg-arc-blue text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.4em] shadow-xl shadow-arc-blue/20">Protocol Stream</span>${isCompleted ? `<span class="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-3 shadow-lg shadow-emerald-50"><i data-lucide="check-circle" class="w-5 h-5"></i> Entry Logged</span>` : ''}</div><h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter leading-none text-left">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium text-left max-w-4xl">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24 text-left"><div class="space-y-10 text-left"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="target" class="text-arc-blue w-8 h-8"></i> Module Syllabus</h3><ul class="space-y-6 text-left">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl text-left"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0 shadow-lg shadow-arc-teal/30"></div> ${obj}</li>`).join('')}</ul></div><div class="space-y-10 text-left"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="shield-check" class="text-arc-blue w-8 h-8"></i> Security Notice</h3><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-2xl shadow-slate-100/50 text-left"><p class="text-lg text-slate-500 italic leading-loose font-medium text-left">Session progress is authenticated against candidate ${state.userInfo.email}. A benchmark of 80% is required to proceed to secondary evaluation tiers.</p></div></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue transition-all shadow-2xl flex items-center justify-center gap-6 group"><i data-lucide="${isCompleted ? 'refresh-cw' : 'zap'}" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> ${isCompleted ? 'Re-attempt Logic' : 'Initiate Module'}</button>`;
             window.switchView('intro');
         };
 
-        window.startExam = function() {
-            state.currentQuestionIndex = 0; state.answers = {}; renderQuestion(); window.switchView('exam');
-        };
+        window.startExam = function() { state.currentQuestionIndex = 0; state.answers = {}; renderQuestion(); window.switchView('exam'); };
 
         function renderQuestion() {
             const level = EXAM_DATA[state.activeLevelId]; const q = level.questions[state.currentQuestionIndex];
@@ -389,7 +329,6 @@
             document.getElementById('exam-progress-bar').style.width = `${((state.currentQuestionIndex + 1) / level.questions.length) * 100}%`;
             document.getElementById('question-text').textContent = q.text;
             const optionsBox = document.getElementById('options-container'); optionsBox.innerHTML = '';
-            
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = `group w-full text-left p-12 rounded-[2.5rem] border-2 transition-all flex items-center justify-between ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue/5 shadow-inner scale-[0.98]' : 'border-slate-100 hover:border-arc-teal bg-white shadow-xl shadow-slate-200/20'}`;
@@ -397,17 +336,12 @@
                 btn.innerHTML = `<span class="text-3xl font-bold ${state.answers[state.currentQuestionIndex] === idx ? 'text-arc-blue' : 'text-slate-700'} text-left">${opt}</span><div class="w-12 h-12 rounded-full border-4 flex items-center justify-center shrink-0 ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue' : 'border-slate-300 group-hover:border-arc-teal'}">${state.answers[state.currentQuestionIndex] === idx ? '<div class="w-5 h-5 bg-white rounded-full shadow-lg"></div>' : ''}</div>`;
                 optionsBox.appendChild(btn);
             });
-            const nextBtn = document.getElementById('next-btn');
-            nextBtn.disabled = state.answers[state.currentQuestionIndex] === undefined;
+            const nextBtn = document.getElementById('next-btn'); nextBtn.disabled = state.answers[state.currentQuestionIndex] === undefined;
             document.getElementById('next-btn-text').textContent = state.currentQuestionIndex === level.questions.length - 1 ? 'Transmit Data' : 'Validate Answer';
             nextBtn.onclick = handleNext;
         }
 
-        function handleNext() {
-            if (state.currentQuestionIndex < EXAM_DATA[state.activeLevelId].questions.length - 1) {
-                state.currentQuestionIndex++; renderQuestion();
-            } else { submitFinal(); }
-        }
+        function handleNext() { if (state.currentQuestionIndex < EXAM_DATA[state.activeLevelId].questions.length - 1) { state.currentQuestionIndex++; renderQuestion(); } else { submitFinal(); } }
 
         async function submitFinal() {
             window.switchView('processing');
@@ -419,33 +353,12 @@
             });
             const percentage = Math.round((correctCount / level.questions.length) * 100);
             const passed = percentage >= level.passScore;
-            
-            // Generate custom "Next Steps" text for Daniel's email
-            let nextStepsText = "";
-            if (passed && levelId < 3) {
-                const nextLevelName = EXAM_DATA[levelId + 1].title;
-                const baseUrl = window.location.origin + window.location.pathname;
-                const nextUrl = `${baseUrl}?level=${levelId + 1}`;
-                nextStepsText = `Next steps to ${nextLevelName}: ${nextUrl}`;
-            } else if (passed && levelId === 3) {
-                nextStepsText = "Candidate has successfully completed the final level.";
-            } else {
-                nextStepsText = "Candidate did not meet the pass threshold for the next module.";
-            }
+            const baseUrl = "https://arcsystemsdartford.github.io/exam-centre/";
+            let nextStepsText = (passed && levelId < 3) ? `Next steps to ${EXAM_DATA[levelId+1].title}: ${baseUrl}?level=${levelId+1}` : "Final level reached.";
 
             try {
                 if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { 
-                        candidate_name: state.userInfo.name, 
-                        candidate_email: state.userInfo.email, 
-                        module_title: level.title, 
-                        score: `${percentage}%`, 
-                        final_score: `${correctCount}/${level.questions.length}`, 
-                        status: passed ? 'PASSED' : 'FAILED', 
-                        admin_email: ADMIN_EMAIL, 
-                        exam_details: breakdown, 
-                        next_level_link: nextStepsText 
-                    });
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { candidate_name: state.userInfo.name, candidate_email: state.userInfo.email, module_title: level.title, score: `${percentage}%`, final_score: `${correctCount}/${level.questions.length}`, status: passed ? 'PASSED' : 'FAILED', admin_email: ADMIN_EMAIL, exam_details: breakdown, next_level_link: nextStepsText });
                 }
                 if (passed) {
                     if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId);
@@ -463,12 +376,8 @@
             state.userInfo.name = document.getElementById('user-name').value.trim();
             state.userInfo.email = document.getElementById('user-email').value.trim().toLowerCase();
             const stored = loadProgress(state.userInfo.email);
-            if (stored) {
-                state.completedLevels = stored.completedLevels || [];
-                state.unlockedLevel = stored.unlockedLevel || 1;
-            } else {
-                state.completedLevels = []; state.unlockedLevel = 1;
-            }
+            if (stored) { state.completedLevels = stored.completedLevels || []; state.unlockedLevel = stored.unlockedLevel || 1; }
+            else { state.completedLevels = []; state.unlockedLevel = 1; }
             document.getElementById('display-name').textContent = state.userInfo.name;
             document.getElementById('nav-display-email').textContent = state.userInfo.email;
             document.getElementById('dropdown-full-name').textContent = state.userInfo.name;
@@ -483,6 +392,7 @@
             const btn = document.querySelector('nav .relative button');
             if (dropdown && !dropdown.contains(e.target) && btn && !btn.contains(e.target)) dropdown.classList.remove('show');
         });
+        lucide.createIcons();
     </script>
 </body>
 </html>
