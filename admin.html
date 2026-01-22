@@ -20,13 +20,13 @@
                 <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Assessment Records</h1>
                 <p class="text-slate-500 font-bold uppercase tracking-widest text-xs mt-2">Engineering Evaluation Oversight</p>
             </div>
-            <button onclick="fetchData()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2">
+            <button onclick="fetchData()" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-200">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh Data
             </button>
         </header>
 
         <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left">
                 <thead class="bg-slate-900 text-white">
                     <tr>
                         <th class="p-6 text-xs font-black uppercase tracking-widest">Timestamp</th>
@@ -34,11 +34,11 @@
                         <th class="p-6 text-xs font-black uppercase tracking-widest">Module</th>
                         <th class="p-6 text-xs font-black uppercase tracking-widest">Score</th>
                         <th class="p-6 text-xs font-black uppercase tracking-widest">Status</th>
-                        <th class="p-6 text-xs font-black uppercase tracking-widest text-center">Breakdown</th>
+                        <th class="p-6 text-xs font-black uppercase tracking-widest text-center">Review</th>
                     </tr>
                 </thead>
-                <tbody id="table-body" class="divide-y divide-slate-100">
-                    <tr><td colspan="6" class="p-20 text-center text-slate-400 font-bold">Initialising secure link...</td></tr>
+                <tbody id="table-body" class="divide-y divide-slate-100 text-left">
+                    <tr><td colspan="6" class="p-20 text-center text-slate-400 font-bold italic">Establishing connection to Google Cloud...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -46,28 +46,27 @@
 
     <div id="details-modal" class="modal fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 items-center justify-center p-4">
         <div class="bg-white rounded-[3rem] max-w-2xl w-full p-12 shadow-2xl relative max-h-[80vh] flex flex-col">
-            <button onclick="closeModal()" class="absolute top-8 right-8 text-slate-400 hover:text-slate-900"><i data-lucide="x" class="w-8 h-8"></i></button>
-            <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-8 pr-12">Technical Breakdown</h2>
-            <div id="modal-content" class="overflow-y-auto text-slate-600 font-medium leading-relaxed whitespace-pre-wrap bg-slate-50 p-8 rounded-3xl border border-slate-100"></div>
+            <button onclick="closeModal()" class="absolute top-8 right-8 text-slate-400 hover:text-slate-900 transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tighter mb-8 pr-12">Technical Review Log</h2>
+            <div id="modal-content" class="overflow-y-auto text-slate-600 font-medium leading-relaxed whitespace-pre-wrap bg-slate-50 p-8 rounded-3xl border border-slate-100 text-sm"></div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz25Vfe7JDmhde5FZbTpft8bKP2XlW4yaCa8o0fWuQO7vg2Aq7uYhmrEvv7pHxxOoNn/exec";
-        let globalData = [];
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3wnjHgNcFEGPtu-qxkPgP8nMVLkUUDBTqp-KBCkGm6tkkWiCwpajuOLOe5zEBe5al/exec";
+        let records = [];
 
         async function fetchData() {
             const tbody = document.getElementById('table-body');
             try {
                 const response = await fetch(SCRIPT_URL);
-                globalData = await response.json();
-                
+                records = await response.json();
                 tbody.innerHTML = '';
-                globalData.forEach((row, index) => {
-                    const statusColor = row.status === 'PASSED' ? 'text-emerald-600 bg-emerald-50' : 'text-red-600 bg-red-50';
+                records.forEach((row, idx) => {
+                    const statusClass = row.status === 'PASSED' ? 'text-emerald-600 bg-emerald-50' : 'text-red-600 bg-red-50';
                     tbody.innerHTML += `
                         <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-6 text-sm text-slate-500 font-medium">${row.timestamp || 'N/A'}</td>
+                            <td class="p-6 text-sm text-slate-500 font-medium">${row.timestamp || '---'}</td>
                             <td class="p-6">
                                 <p class="font-black text-slate-900 text-sm">${row.name || 'Unknown'}</p>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${row.email || 'N/A'}</p>
@@ -75,34 +74,25 @@
                             <td class="p-6 text-sm font-bold text-slate-700">${row.module || 'N/A'}</td>
                             <td class="p-6 text-sm font-black text-blue-600">${row.score || '0%'}</td>
                             <td class="p-6">
-                                <span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusColor}">
-                                    ${row.status || 'PENDING'}
-                                </span>
+                                <span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusClass}">${row.status || 'FAILED'}</span>
                             </td>
                             <td class="p-6 text-center">
-                                <button onclick="showDetails(${index})" class="text-slate-400 hover:text-blue-600 transition-colors">
-                                    <i data-lucide="file-text" class="w-6 h-6 mx-auto"></i>
-                                </button>
+                                <button onclick="openModal(${idx})" class="text-slate-300 hover:text-blue-600 transition-all"><i data-lucide="clipboard-list" class="w-6 h-6 mx-auto"></i></button>
                             </td>
                         </tr>
                     `;
                 });
             } catch (err) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-20 text-center text-red-500 font-bold">Error fetching records. Ensure script is deployed correctly.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-20 text-center text-red-500 font-bold uppercase tracking-widest">Sync Failed. Verify Script URL and Public Access.</td></tr>`;
             }
             lucide.createIcons();
         }
 
-        function showDetails(index) {
-            const record = globalData[index];
-            document.getElementById('modal-content').innerText = record.details || "No technical breakdown available for this record.";
+        function openModal(index) {
+            document.getElementById('modal-content').innerText = records[index].details || "No technical breakdown available.";
             document.getElementById('details-modal').classList.add('active');
         }
-
-        function closeModal() {
-            document.getElementById('details-modal').classList.remove('active');
-        }
-
+        function closeModal() { document.getElementById('details-modal').classList.remove('active'); }
         window.onload = fetchData;
     </script>
 </body>
