@@ -4,300 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arc Systems Admin</title>
-    <!-- Tailwind CSS with Custom Brand Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            theme: { 
-                extend: { 
-                    colors: { 
-                        arc: { 
-                            blue: '#004a99', 
-                            teal: '#38b6ff', 
-                            dark: '#002d5e' 
-                        } 
-                    } 
-                } 
-            }
+            theme: { extend: { colors: { arc: { blue: '#004a99', teal: '#38b6ff', dark: '#002d5e' } } } }
         }
     </script>
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Firebase SDK (Compat mode for simple usage) -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .view { display: none; } 
-        .view.active { display: block; }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view { display: none; } .view.active { display: block; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
 
     <!-- Login View -->
     <div id="view-login" class="view active min-h-screen flex items-center justify-center bg-arc-dark p-6">
-        <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center fade-in">
+        <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center">
             <img src="arc.jpg" alt="Logo" class="h-20 mx-auto mb-10" onerror="this.src='https://placehold.co/200x80?text=Arc+Systems'">
-            <h1 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wider">Admin Access</h1>
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8">Secure Management Hub</p>
-            
-            <div class="space-y-6">
-                <input type="password" id="admin-pass" placeholder="Authorization Key" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all">
-                <button onclick="checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl shadow-arc-blue/20">
-                    Enter Dashboard
-                </button>
-                <p id="login-err" class="text-red-500 text-xs font-black uppercase tracking-tighter hidden flex items-center justify-center gap-2">
-                    <i data-lucide="alert-circle" class="w-4 h-4"></i> Invalid Access Key
-                </p>
-            </div>
+            <h1 class="text-2xl font-black text-slate-800 mb-8 uppercase tracking-wider">Admin Access</h1>
+            <input type="password" id="admin-pass" placeholder="Authorization Key" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg mb-6">
+            <button onclick="checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl">Enter Dashboard</button>
+            <p id="login-err" class="text-red-500 text-xs font-black uppercase mt-4 hidden">Invalid Access Key</p>
         </div>
     </div>
 
     <!-- Dashboard View -->
     <div id="view-dashboard" class="view min-h-screen flex flex-col">
         <nav class="bg-white border-b border-slate-100 px-8 py-5 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-            <div class="flex items-center gap-4">
-                <img src="arc.jpg" alt="Logo" class="h-8" onerror="this.src='https://placehold.co/100x40?text=Arc'">
-                <div class="h-5 w-[1px] bg-slate-200"></div>
-                <span class="text-arc-blue font-black uppercase tracking-widest text-[10px]">Administrative Hub</span>
-            </div>
-            <button onclick="location.reload()" class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all font-bold text-xs">
-                <span>Sign Out</span>
-                <i data-lucide="log-out" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-4"><img src="arc.jpg" alt="Logo" class="h-8"><span class="text-arc-blue font-black uppercase tracking-widest text-[10px]">Administrative Hub</span></div>
+            <button onclick="location.reload()" class="bg-slate-50 px-4 py-2 rounded-xl text-slate-400 hover:text-red-500 font-bold text-xs">Sign Out</button>
         </nav>
-
         <div class="max-w-7xl mx-auto w-full p-8 flex-1">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
-                <div>
-                    <h1 class="text-5xl font-black text-slate-900 tracking-tighter">Candidate Log</h1>
-                    <p class="text-slate-400 mt-2 font-medium">Real-time assessment synchronization and result verification.</p>
-                </div>
-                <div class="flex items-center gap-6">
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Database State</p>
-                        <span id="sync-status" class="flex items-center justify-end gap-2 text-xs font-bold text-emerald-500 uppercase tracking-widest">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Synchronized
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Main Feed -->
-                <div class="lg:col-span-3 space-y-4">
-                    <div id="submissions-list" class="space-y-4">
-                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100">
-                            <div class="inline-block animate-spin mb-4 text-slate-200"><i data-lucide="loader-2" class="w-10 h-10"></i></div>
-                            <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Fetching live data stream...</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar Stats -->
-                <div class="space-y-6">
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28">
-                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4">Portal Metrics</h3>
-                        
-                        <div class="space-y-4 mb-8">
-                            <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                                <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Total Submissions</p>
-                                <p id="stat-total" class="text-4xl font-black text-arc-blue">0</p>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Support Directs</p>
-                            <div class="space-y-3">
-                                <a href="mailto:adam.ayliffe@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline truncate">Adam Ayliffe</a>
-                                <a href="mailto:daniel.muckle@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline truncate">Daniel Muckle</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <h1 class="text-5xl font-black text-slate-900 tracking-tighter mb-12">Candidate Submissions</h1>
+            <div id="submissions-list" class="space-y-4">
+                <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400">Loading live stream...</div>
             </div>
         </div>
     </div>
 
-    <!-- Modal for Detailed Result View -->
+    <!-- Result Detail Modal -->
     <div id="detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in">
+        <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-10 border-b border-slate-50 flex justify-between items-start bg-slate-50/50">
-                <div>
-                    <h2 id="modal-name" class="text-3xl font-black text-slate-900 tracking-tight leading-none">Candidate Name</h2>
-                    <p id="modal-email" class="text-xs font-bold text-arc-blue uppercase tracking-widest mt-3">email@example.com</p>
-                </div>
-                <button onclick="closeModal()" class="bg-white p-2 rounded-xl text-slate-300 hover:text-red-500 hover:shadow-md transition-all">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <div><h2 id="modal-name" class="text-3xl font-black text-slate-900">...</h2><p id="modal-email" class="text-xs font-bold text-arc-blue uppercase tracking-widest mt-3">...</p></div>
+                <button onclick="closeModal()" class="text-slate-300 hover:text-red-500"><i data-lucide="x" class="w-8 h-8"></i></button>
             </div>
-            <div id="modal-content" class="p-10 overflow-y-auto space-y-8">
-                <!-- Breakdown injected here -->
-            </div>
+            <div id="modal-content" class="p-10 overflow-y-auto space-y-8"></div>
         </div>
     </div>
 
-    <script>
-        // Use environment variables or default for local dev
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, query, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
         const firebaseConfig = JSON.parse(__firebase_config);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'it-exam-portal-arc';
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        /**
-         * UPDATED ACCESS KEY
-         */
-        function checkAdmin() {
+        window.checkAdmin = function() {
             const pass = document.getElementById('admin-pass').value;
-            // The new required key
-            if (pass === 'A2c5ySt3m5ExamR35u1ts') { 
+            if (pass === 'A2c5ySt3m5ExamR35u1ts') {
                 document.getElementById('view-login').classList.remove('active');
                 document.getElementById('view-dashboard').classList.add('active');
                 initDashboard();
             } else {
-                const err = document.getElementById('login-err');
-                err.classList.remove('hidden');
-                setTimeout(() => err.classList.add('hidden'), 3000);
+                document.getElementById('login-err').classList.remove('hidden');
             }
-        }
+        };
 
         async function initDashboard() {
             lucide.createIcons();
-            await firebase.auth().signInAnonymously();
+            await signInAnonymously(auth);
             
-            // Listen to submissions collection
-            db.collection('artifacts').doc(appId).collection('public').doc('data').collection('submissions')
-              .onSnapshot(snap => {
-                  const list = document.getElementById('submissions-list');
-                  const countEl = document.getElementById('stat-total');
-                  list.innerHTML = '';
-                  
-                  const docs = snap.docs.sort((a, b) => {
-                      const tA = a.data().timestamp?.seconds || 0;
-                      const tB = b.data().timestamp?.seconds || 0;
-                      return tB - tA;
-                  });
-                  
-                  countEl.textContent = docs.length;
+            // Listen to results collection (Rule 1 & Rule 2)
+            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'submissions'), (snap) => {
+                const list = document.getElementById('submissions-list');
+                list.innerHTML = '';
+                
+                // Rule 2: Sort in memory
+                const docs = snap.docs.sort((a, b) => (b.data().timestamp?.seconds || 0) - (a.data().timestamp?.seconds || 0));
+                
+                if (docs.length === 0) { list.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">No results yet.</div>'; return; }
 
-                  if (docs.length === 0) {
-                      list.innerHTML = `
-                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100">
-                            <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No candidate submissions detected.</p>
-                        </div>`;
-                      return;
-                  }
-
-                  docs.forEach(doc => {
-                      const data = doc.data();
-                      const card = document.createElement('div');
-                      card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg hover:border-arc-teal transition-all flex justify-between items-center group";
-                      card.innerHTML = `
-                          <div class="flex items-center gap-6">
-                              <div class="w-16 h-16 rounded-2xl ${data.passed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0 transition-transform group-hover:scale-110">
-                                  <i data-lucide="${data.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
-                              </div>
-                              <div>
-                                  <h4 class="text-lg font-black text-slate-800 leading-tight">${data.candidateName}</h4>
-                                  <p class="text-xs font-bold text-slate-400 tracking-tight mt-0.5">${data.candidateEmail}</p>
-                              </div>
-                          </div>
-                          <div class="text-right flex items-center gap-10">
-                              <div class="hidden md:block">
-                                  <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">${data.levelTitle}</p>
-                                  <p class="text-2xl font-black ${data.passed ? 'text-emerald-600' : 'text-slate-900'}">${data.score}%</p>
-                              </div>
-                              <button onclick='viewDetails(${JSON.stringify(data).replace(/'/g, "&apos;")})' class="bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark transition-all shadow-lg shadow-arc-blue/20">
-                                  <i data-lucide="eye" class="w-5 h-5"></i>
-                              </button>
-                          </div>
-                      `;
-                      list.appendChild(card);
-                  });
-                  lucide.createIcons();
-              }, err => {
-                  console.error("Firestore sync error:", err);
-                  alert("Session lost. Please refresh the page.");
-              });
+                docs.forEach(d => {
+                    const data = d.data();
+                    const card = document.createElement('div');
+                    card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all flex justify-between items-center group";
+                    card.innerHTML = `<div class="flex items-center gap-6"><div class="w-16 h-16 rounded-2xl ${data.passed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0"><i data-lucide="${data.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i></div><div><h4 class="text-lg font-black text-slate-800">${data.candidateName}</h4><p class="text-xs font-bold text-slate-400 mt-0.5">${data.candidateEmail}</p></div></div><div class="text-right flex items-center gap-10"><div><p class="text-[9px] font-black uppercase text-slate-400 mb-1">${data.levelTitle}</p><p class="text-2xl font-black ${data.passed ? 'text-emerald-600' : 'text-slate-900'}">${data.score}%</p></div><button class="view-btn bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark"><i data-lucide="eye" class="w-5 h-5"></i></button></div>`;
+                    card.querySelector('.view-btn').onclick = () => viewDetails(data);
+                    list.appendChild(card);
+                });
+                lucide.createIcons();
+            });
         }
 
         function viewDetails(data) {
             document.getElementById('modal-name').textContent = data.candidateName;
             document.getElementById('modal-email').textContent = data.candidateEmail;
             const content = document.getElementById('modal-content');
-            
-            // Generate link for next level based on the base URL
-            const baseUrl = "https://arcsystemsdartford.github.io/exam-centre/";
-            const nextLink = `${baseUrl}?level=${data.levelId + 1}`;
+            const nextLink = `https://arcsystemsdartford.github.io/exam-centre/?level=${data.levelId + 1}`;
 
             content.innerHTML = `
                 <div class="grid grid-cols-2 gap-6">
-                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
-                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Final Outcome</p>
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Outcome</p>
                         <p class="text-2xl font-black ${data.passed ? 'text-emerald-500' : 'text-red-500'}">${data.passed ? 'PASSED' : 'FAILED'}</p>
                     </div>
-                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
-                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Submission Time</p>
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Time</p>
                         <p class="text-xs font-bold text-slate-600">${data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'Just now'}</p>
                     </div>
                 </div>
-
                 ${data.passed && data.levelId < 3 ? `
-                    <div class="p-8 bg-arc-blue/5 rounded-[2rem] border-2 border-arc-blue/10 space-y-4">
-                        <div class="flex justify-between items-center">
-                            <p class="text-xs font-black text-arc-blue uppercase tracking-widest">Authorization Link Generator</p>
-                            <span class="text-[10px] font-bold text-slate-400">Level ${data.levelId + 1} Access</span>
-                        </div>
-                        <div class="flex gap-3">
-                            <input readonly value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500 focus:outline-none shadow-sm">
-                            <button onclick="copyLink('${nextLink}')" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark transition-all shadow-md">Copy URL</button>
-                        </div>
-                        <p class="text-[10px] text-slate-400 italic">Provide this link to the candidate to authorize the next assessment module.</p>
+                    <div class="p-8 bg-arc-blue/5 rounded-[2rem] border-2 border-arc-blue/10 space-y-4 text-left">
+                        <p class="text-xs font-black text-arc-blue uppercase tracking-widest">Authorized Link for Level ${data.levelId + 1}</p>
+                        <div class="flex gap-3"><input readonly id="copy-inp" value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500"><button onclick="copyLink()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0">Copy</button></div>
                     </div>
                 ` : ''}
-
-                <div class="space-y-6">
-                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] border-b border-slate-100 pb-2">Response Breakdown</p>
-                    <div class="space-y-4">
-                        ${data.details.map(log => `
-                            <div class="p-5 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'}">
-                                <p class="text-sm font-bold text-slate-800 mb-2 leading-snug">${log.q}</p>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'}">${log.status}</span>
-                                    <div class="w-[1px] h-3 bg-slate-200"></div>
-                                    <p class="text-xs font-semibold text-slate-600">Answer: ${log.a}</p>
-                                </div>
-                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 font-medium">Valid Response: ${log.correctVal}</p>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
+                <div class="space-y-4 text-left">
+                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2">Response Breakdown</p>
+                    ${data.details.map(log => `<div class="p-4 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'}"><p class="text-sm font-bold text-slate-800 mb-1">${log.q}</p><p class="text-xs font-semibold ${log.status === 'Correct' ? 'text-emerald-600' : 'text-red-600'}">Answer: ${log.a}</p></div>`).join('')}
                 </div>
             `;
             document.getElementById('detail-modal').classList.remove('hidden');
-            lucide.createIcons();
         }
 
-        function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
-        
-        function copyLink(link) {
-            const el = document.createElement('textarea');
-            el.value = link;
-            document.body.appendChild(el);
+        window.closeModal = () => document.getElementById('detail-modal').classList.add('hidden');
+        window.copyLink = () => {
+            const el = document.getElementById('copy-inp');
             el.select();
             document.execCommand('copy');
-            document.body.removeChild(el);
-            
-            // Custom toast notification style using alert
-            alert("Progression link copied to clipboard.");
-        }
-
-        // Close modal on escape
-        window.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+            alert("Copied!");
+        };
     </script>
 </body>
 </html>
