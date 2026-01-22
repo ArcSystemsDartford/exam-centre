@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Assessment Portal</title>
+    <title>Arc Systems | Engineering Evaluation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -22,9 +22,8 @@
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .view { display: none; }
         .view.active { display: flex; } 
@@ -36,178 +35,108 @@
         #user-dropdown { display: none; }
         #user-dropdown.show { display: block; }
         .content-area { padding-top: 100px; }
-        .bg-arc-gradient {
-            background: radial-gradient(circle at top left, #004a99 0%, #002d5e 100%);
-        }
+        .bg-arc-gradient { background: radial-gradient(circle at top left, #004a99 0%, #002d5e 100%); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
     <nav id="global-nav" class="hidden fixed top-0 left-0 w-full bg-white/90 backdrop-blur-xl z-50 border-b border-slate-100 px-6 py-4 shadow-sm text-left">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="image_b6e059.png" alt="Arc Systems Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
+                <img src="image_b6e059.png" alt="Arc Systems" class="h-10 w-auto" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
                 <div class="h-6 w-[1px] bg-slate-200 hidden md:block"></div>
-                <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block">Engineering Evaluation Portal</span>
+                <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block">Engineering Portal</span>
             </div>
-            
             <div class="relative">
-                <button onclick="toggleUserDropdown()" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm flex items-center gap-3 hover:border-arc-teal transition-all group">
+                <button onclick="toggleUserDropdown()" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 flex items-center gap-3">
                     <div id="nav-user-initial" class="w-8 h-8 rounded-xl bg-arc-blue flex items-center justify-center text-white text-sm font-black">U</div>
-                    <div class="text-left hidden sm:block">
-                        <p id="nav-display-email" class="text-slate-800 font-black text-xs truncate max-w-[150px]">email@example.com</p>
-                    </div>
-                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 group-hover:text-arc-blue transition-transform"></i>
+                    <p id="nav-display-email" class="text-slate-800 font-black text-xs hidden sm:block">email@example.com</p>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
                 </button>
                 <div id="user-dropdown" class="absolute right-0 mt-3 w-64 bg-white border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden fade-in">
-                    <div class="p-5 border-b border-slate-50 bg-slate-50/50">
+                    <div class="p-5 border-b border-slate-50">
                         <p id="dropdown-full-name" class="text-slate-900 font-black truncate text-sm">Candidate Name</p>
-                        <p id="dropdown-email" class="text-slate-500 text-[10px] uppercase font-bold tracking-wider truncate">email@example.com</p>
+                        <p id="dropdown-email" class="text-slate-500 text-[10px] uppercase font-bold tracking-wider">email@example.com</p>
                     </div>
-                    <div class="p-2 text-left">
-                        <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-600 text-sm font-bold hover:bg-red-50 rounded-2xl transition-colors">
-                            <i data-lucide="log-out" class="w-4 h-4"></i>
-                            Sign Out & Exit
-                        </button>
-                    </div>
+                    <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-600 text-sm font-bold hover:bg-red-50">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <div id="view-registration" class="view active flex-1 flex-col items-center justify-center p-6 bg-arc-gradient">
-        <div class="max-w-4xl w-full bg-white rounded-[3.5rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] p-10 md:p-20 border border-white/20 mb-16 fade-in text-center relative overflow-hidden">
+        <div class="max-w-4xl w-full bg-white rounded-[3.5rem] shadow-2xl p-10 md:p-20 text-center relative overflow-hidden fade-in">
             <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-arc-blue to-arc-teal"></div>
-            <div class="mb-14">
-                <h1 class="text-5xl font-black text-slate-900 tracking-tighter mb-4 uppercase leading-tight">Engineering Portal</h1>
-                <p class="text-slate-500 text-xl leading-relaxed max-w-2xl mx-auto font-medium">Identify yourself to begin or resume your technical assessments.</p>
-            </div>
+            <h1 class="text-5xl font-black text-slate-900 tracking-tighter mb-4 uppercase">Engineering Portal</h1>
+            <p class="text-slate-500 text-xl mb-14 font-medium">Verify identity to begin assessment.</p>
             <form id="registration-form" class="space-y-10 text-left">
                 <div class="grid md:grid-cols-2 gap-10">
                     <div class="space-y-3">
-                        <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em] ml-1">Full Identity</label>
-                        <div class="relative group">
-                            <i data-lucide="user" class="absolute left-6 top-6 text-slate-300 w-6 h-6 transition-colors group-focus-within:text-arc-teal"></i>
-                            <input required type="text" id="user-name" placeholder="John Doe" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 pl-16 pr-8 focus:outline-none focus:border-arc-teal transition-all font-bold text-slate-800 text-lg shadow-inner">
-                        </div>
+                        <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em]">Full Identity</label>
+                        <input required type="text" id="user-name" placeholder="John Doe" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 px-8 focus:border-arc-teal outline-none font-bold">
                     </div>
                     <div class="space-y-3">
-                        <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em] ml-1">Work Email</label>
-                        <div class="relative group">
-                            <i data-lucide="mail" class="absolute left-6 top-6 text-slate-300 w-6 h-6 transition-colors group-focus-within:text-arc-teal"></i>
-                            <input required type="email" id="user-email" placeholder="email@address.com" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 pl-16 pr-8 focus:outline-none focus:border-arc-teal transition-all font-bold text-slate-800 text-lg shadow-inner">
-                        </div>
+                        <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em]">Work Email</label>
+                        <input required type="email" id="user-email" placeholder="email@address.com" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 px-8 focus:border-arc-teal outline-none font-bold">
                     </div>
                 </div>
-                <button type="submit" id="reg-submit-btn" class="w-full bg-arc-blue text-white py-7 rounded-[2rem] font-black text-2xl hover:bg-arc-dark hover:scale-[1.01] active:scale-[0.99] transition-all shadow-2xl shadow-arc-blue/30 flex items-center justify-center gap-5 mt-6 group">
+                <button type="submit" id="reg-submit-btn" class="w-full bg-arc-blue text-white py-7 rounded-[2rem] font-black text-2xl hover:bg-arc-dark shadow-2xl shadow-arc-blue/30 transition-all flex items-center justify-center gap-5">
                     <span id="reg-btn-text">Initialize Portal Access</span> 
-                    <i data-lucide="chevron-right" class="w-8 h-8 group-hover:translate-x-2 transition-transform"></i>
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <div id="view-dashboard" class="view flex-col min-h-screen max-w-6xl mx-auto px-8 content-area pb-24 text-left">
-        <header class="mb-16 fade-in flex flex-col md:flex-row md:items-end justify-between gap-8 text-left">
-            <div class="text-left">
-                <h1 class="text-7xl font-black text-slate-900 tracking-tighter flex items-center gap-6 leading-tight">
-                    <i data-lucide="terminal" class="text-arc-blue w-20 h-20"></i> Dashboard
-                </h1>
-                <p class="text-slate-500 mt-8 text-2xl font-medium leading-relaxed max-w-2xl text-left">
-                    Welcome back, <span id="display-name" class="text-arc-blue font-black underline decoration-arc-teal decoration-4 underline-offset-8">Candidate</span>. <br>
-                    Review your progress and initiate available evaluation modules below.
-                </p>
-            </div>
-        </header>
-        <div id="level-list" class="grid gap-12 w-full mb-32 fade-in text-left"></div>
+    <div id="view-dashboard" class="view flex-col max-w-6xl mx-auto px-8 content-area pb-24 text-left">
+        <h1 class="text-7xl font-black text-slate-900 tracking-tighter flex items-center gap-6 mb-8"><i data-lucide="terminal" class="text-arc-blue w-20 h-20"></i> Dashboard</h1>
+        <p class="text-slate-500 text-2xl font-medium mb-16">Welcome, <span id="display-name" class="text-arc-blue font-black underline decoration-arc-teal decoration-4 underline-offset-8">Candidate</span>.</p>
+        <div id="level-list" class="grid gap-12 w-full"></div>
     </div>
 
-    <div id="view-intro" class="view min-h-screen flex-col items-center justify-center p-6 content-area pb-20 text-left">
-        <div class="max-w-5xl w-full flex flex-col fade-in text-left">
-            <button onclick="window.showDashboard()" class="flex items-center gap-3 text-slate-400 hover:text-arc-blue font-black mb-10 transition-colors self-start text-sm uppercase tracking-[0.4em]">
-                <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Overview
-            </button>
-            <div id="intro-content" class="bg-white rounded-[4.5rem] p-12 md:p-24 border border-slate-100 shadow-2xl relative overflow-hidden text-left">
-                <div class="absolute top-0 right-0 w-80 h-80 bg-arc-blue/5 rounded-full -mr-40 -mt-40 opacity-50"></div>
-            </div>
+    <div id="view-intro" class="view flex-col items-center justify-center p-6 content-area pb-20">
+        <div class="max-w-5xl w-full flex flex-col fade-in">
+            <button onclick="window.showDashboard()" class="flex items-center gap-3 text-slate-400 font-black mb-10 text-sm uppercase tracking-[0.4em]"><i data-lucide="arrow-left" class="w-5 h-5"></i> Back</button>
+            <div id="intro-content" class="bg-white rounded-[4.5rem] p-12 md:p-24 border border-slate-100 shadow-2xl relative overflow-hidden text-left"></div>
         </div>
     </div>
 
-    <div id="view-exam" class="view min-h-screen flex-col items-center p-8 md:p-16 content-area pb-20 text-left">
-        <div class="max-w-5xl w-full fade-in text-left">
+    <div id="view-exam" class="view flex-col items-center p-8 content-area">
+        <div class="max-w-5xl w-full text-left">
             <div class="flex justify-between items-end mb-12">
-                <div class="flex-1 mr-16 text-left">
-                    <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Evaluation Validation Protocol</h2>
-                    <div class="h-5 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner border-4 border-white">
-                        <div id="exam-progress-bar" class="h-full bg-gradient-to-r from-arc-blue to-arc-teal transition-all duration-700" style="width: 0%"></div>
-                    </div>
+                <div class="flex-1 mr-16">
+                    <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Validation Protocol</h2>
+                    <div class="h-5 w-full bg-slate-200 rounded-full overflow-hidden border-4 border-white"><div id="exam-progress-bar" class="h-full bg-gradient-to-r from-arc-blue to-arc-teal transition-all duration-700" style="width: 0%"></div></div>
                 </div>
                 <div id="exam-counter" class="bg-white px-10 py-5 rounded-[2rem] border border-slate-100 font-black text-arc-blue shadow-xl text-2xl">1 / 15</div>
             </div>
-            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden text-left">
+            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-4 h-full bg-arc-blue"></div>
-                <h3 id="question-text" class="text-4xl font-bold text-slate-900 mb-20 leading-[1.15] text-left">...</h3>
-                <div id="options-container" class="grid gap-6 text-left"></div>
-                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center text-left">
-                    <div class="flex items-center gap-4 text-slate-400">
-                        <div class="w-3.5 h-3.5 bg-arc-teal rounded-full animate-pulse"></div>
-                        <p class="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Session ID: <span id="candidate-footer-name" class="text-arc-blue underline underline-offset-8 font-black">...</span></p>
-                    </div>
-                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark disabled:opacity-20 transition-all flex items-center gap-5 text-2xl shadow-2xl shadow-arc-blue/20 group">
-                        <span id="next-btn-text">Confirm Entry</span> <i data-lucide="chevron-right" class="w-8 h-8 group-hover:translate-x-2 transition-transform"></i>
-                    </button>
+                <h3 id="question-text" class="text-4xl font-bold text-slate-900 mb-20 leading-tight">...</h3>
+                <div id="options-container" class="grid gap-6"></div>
+                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center">
+                    <p class="text-sm font-black uppercase tracking-[0.2em] text-slate-500">ID: <span id="candidate-footer-name" class="text-arc-blue">...</span></p>
+                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark disabled:opacity-20 transition-all flex items-center gap-5 text-2xl shadow-xl"><span id="next-btn-text">Confirm</span> <i data-lucide="chevron-right" class="w-8 h-8"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="view-processing" class="view min-h-screen items-center justify-center p-4 text-center">
-        <div class="text-center space-y-12">
-            <div class="relative inline-block scale-[2.5]">
-                <div class="w-16 h-16 border-[6px] border-arc-blue/10 rounded-full"></div>
-                <div class="w-16 h-16 border-[6px] border-arc-teal border-t-transparent rounded-full animate-spin absolute top-0"></div>
-            </div>
-            <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase">Encrypting</h3>
-            <p class="text-arc-blue font-black uppercase tracking-[0.5em] text-sm">Transmitting Module Log to Enterprise Cloud</p>
-        </div>
-    </div>
+    <div id="view-processing" class="view flex-col items-center justify-center p-4"><h3 class="text-6xl font-black text-slate-900 animate-pulse tracking-tighter uppercase">Encrypting & Transmitting...</h3></div>
 
-    <div id="view-success" class="view min-h-screen items-center justify-center p-4 content-area pb-20 text-center">
-        <div class="bg-white rounded-[5rem] shadow-2xl p-12 md:p-28 max-w-4xl w-full text-center space-y-16 border border-slate-50 fade-in">
-            <div class="flex justify-center">
-                <div class="bg-emerald-50 p-16 rounded-full shadow-inner ring-[12px] ring-emerald-50/50">
-                    <i data-lucide="check-circle" class="w-32 h-32 text-emerald-500 stroke-[2px]"></i>
-                </div>
-            </div>
-            <div class="space-y-6">
-                <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Module Verified</h3>
-                <p class="text-slate-500 text-3xl font-medium max-w-2xl mx-auto leading-relaxed">Your results have been processed and stored in the Arc Systems technical record.</p>
-            </div>
-            <button onclick="window.showDashboard()" class="w-full bg-arc-blue text-white py-8 rounded-[2.5rem] text-3xl font-black hover:bg-arc-dark transition-all shadow-2xl shadow-arc-blue/30 flex items-center justify-center gap-6">
-                Return to Assessment Hub <i data-lucide="arrow-right" class="w-10 h-10"></i>
-            </button>
+    <div id="view-success" class="view flex-col items-center justify-center p-4 content-area">
+        <div class="bg-white rounded-[5rem] shadow-2xl p-12 md:p-28 max-w-4xl w-full text-center space-y-16 fade-in">
+            <i data-lucide="check-circle" class="w-32 h-32 text-emerald-500 mx-auto stroke-[2px]"></i>
+            <h3 class="text-6xl font-black text-slate-900 uppercase">Module Verified</h3>
+            <button onclick="window.showDashboard()" class="w-full bg-arc-blue text-white py-8 rounded-[2.5rem] text-3xl font-black hover:bg-arc-dark flex items-center justify-center gap-6">Return to Hub <i data-lucide="arrow-right" class="w-10 h-10"></i></button>
         </div>
     </div>
 
     <script>
-        // Persistence
-        function saveProgress() {
-            if (!state.userInfo.email) return;
-            const data = { name: state.userInfo.name, completedLevels: state.completedLevels, unlockedLevel: state.unlockedLevel };
-            localStorage.setItem(`candidate_${state.userInfo.email}`, JSON.stringify(data));
-        }
-        function loadProgress(email) {
-            const stored = localStorage.getItem(`candidate_${email}`);
-            return stored ? JSON.parse(stored) : null;
-        }
-
-        // Config
-        const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm"; 
-        const EMAILJS_SERVICE_ID = "service_bphlojw"; 
-        const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; 
-        const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
-        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbz25Vfe7JDmhde5FZbTpft8bKP2XlW4yaCa8o0fWuQO7vg2Aq7uYhmrEvv7pHxxOoNn/exec";
-
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycby3wnjHgNcFEGPtu-qxkPgP8nMVLkUUDBTqp-KBCkGm6tkkWiCwpajuOLOe5zEBe5al/exec";
+        const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm"; const EMAILJS_SERVICE_ID = "service_bphlojw"; const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
         if (EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
 
         const EXAM_DATA = {
@@ -230,184 +159,81 @@
         };
 
         window.toggleUserDropdown = function() { document.getElementById('user-dropdown').classList.toggle('show'); };
-        window.logout = function() {
-            document.getElementById('user-dropdown').classList.remove('show');
-            state = { userInfo: { name: '', email: '' }, unlockedLevel: 1, completedLevels: [], activeLevelId: null, currentQuestionIndex: 0, answers: {} };
-            document.getElementById('registration-form').reset();
-            window.switchView('registration');
-        };
+        window.logout = function() { window.location.reload(); };
 
         window.showDashboard = function() {
             const list = document.getElementById('level-list');
             list.innerHTML = '';
             for (let id = 1; id <= state.unlockedLevel; id++) {
-                const level = EXAM_DATA[id];
-                const isCompleted = state.completedLevels.includes(id);
+                const level = EXAM_DATA[id]; const isCompleted = state.completedLevels.includes(id);
                 const card = document.createElement('div');
-                card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in text-left`;
+                card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in`;
                 card.onclick = () => window.showIntro(id);
-                card.innerHTML = `
-                    <div class="flex items-center gap-12">
-                        <div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 ${isCompleted ? 'bg-emerald-100 text-emerald-600' : 'bg-arc-blue/5 text-arc-blue'}">
-                            <i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-5xl font-black text-slate-900 tracking-tighter">${level.title}</h2>
-                            <p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium leading-relaxed">${level.description}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform">
-                            ${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                        </div>
-                    </div>
-                    ${isCompleted ? '<div class="absolute top-0 right-0 bg-emerald-500 text-white text-[11px] font-black uppercase px-12 py-4 rounded-bl-[2.5rem] tracking-widest shadow-lg">Verified</div>' : ''}
-                `;
+                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 ${isCompleted ? 'bg-emerald-100 text-emerald-600' : 'bg-arc-blue/5 text-arc-blue'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div><h2 class="text-5xl font-black text-slate-900 tracking-tighter">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium">${level.description}</p></div></div><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform">${isCompleted ? 'Log Found' : 'Launch'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div>`;
                 list.appendChild(card);
             }
             window.switchView('dashboard');
         };
 
         window.showIntro = function(levelId) {
-            state.activeLevelId = levelId;
-            const level = EXAM_DATA[levelId];
-            const isCompleted = state.completedLevels.includes(levelId);
-            const container = document.getElementById('intro-content');
-            container.innerHTML = `
-                <div class="flex items-center gap-6 mb-12">
-                    <span class="bg-arc-blue text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.4em]">Protocol Stream</span>
-                    ${isCompleted ? `<span class="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-3 shadow-lg shadow-emerald-50"><i data-lucide="check-circle" class="w-5 h-5"></i> Entry Logged</span>` : ''}
-                </div>
-                <h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter leading-none">${level.title}</h1>
-                <p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium max-w-4xl">${level.description}</p>
-                <div class="grid md:grid-cols-2 gap-16 mb-24">
-                    <div class="space-y-10">
-                        <h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6"><i data-lucide="target" class="text-arc-blue w-8 h-8"></i> Module Syllabus</h3>
-                        <ul class="space-y-6">
-                            ${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0"></div> ${obj}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="space-y-10">
-                        <h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6"><i data-lucide="shield-check" class="text-arc-blue w-8 h-8"></i> Security Notice</h3>
-                        <div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-2xl shadow-slate-100/50">
-                            <p class="text-lg text-slate-500 italic leading-loose font-medium">Session progress is authenticated against candidate ${state.userInfo.email}. A benchmark of 80% is required to proceed to secondary evaluation tiers.</p>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue transition-all shadow-2xl flex items-center justify-center gap-6 group">
-                    <i data-lucide="${isCompleted ? 'refresh-cw' : 'zap'}" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> 
-                    ${isCompleted ? 'Re-attempt Logic' : 'Initiate Module'}
-                </button>
-            `;
+            state.activeLevelId = levelId; const level = EXAM_DATA[levelId];
+            document.getElementById('intro-content').innerHTML = `<h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium max-w-4xl">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24"><div class="space-y-10"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6">Module Syllabus</h3><ul class="space-y-6">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2"></div> ${obj}</li>`).join('')}</ul></div><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-inner"><p class="text-lg text-slate-500 italic leading-loose">Secure session authenticated for ${state.userInfo.email}. 80% pass required.</p></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue flex items-center justify-center gap-6 group"><i data-lucide="zap" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> Initiate Module</button>`;
             window.switchView('intro');
         };
 
         window.startExam = function() { state.currentQuestionIndex = 0; state.answers = {}; renderQuestion(); window.switchView('exam'); };
 
         function renderQuestion() {
-            const level = EXAM_DATA[state.activeLevelId];
-            const q = level.questions[state.currentQuestionIndex];
+            const level = EXAM_DATA[state.activeLevelId]; const q = level.questions[state.currentQuestionIndex];
             document.getElementById('exam-counter').textContent = `${state.currentQuestionIndex + 1} / ${level.questions.length}`;
             document.getElementById('exam-progress-bar').style.width = `${((state.currentQuestionIndex + 1) / level.questions.length) * 100}%`;
             document.getElementById('question-text').textContent = q.text;
-            const optionsBox = document.getElementById('options-container');
-            optionsBox.innerHTML = '';
+            const container = document.getElementById('options-container'); container.innerHTML = '';
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = `group w-full text-left p-12 rounded-[2.5rem] border-2 transition-all flex items-center justify-between ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue/5' : 'border-slate-100 hover:border-arc-teal bg-white'}`;
+                btn.className = `group w-full text-left p-12 rounded-[2.5rem] border-2 transition-all flex items-center justify-between ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue/5' : 'border-slate-100 bg-white hover:border-arc-teal'}`;
                 btn.onclick = () => { state.answers[state.currentQuestionIndex] = idx; renderQuestion(); };
-                btn.innerHTML = `<span class="text-3xl font-bold ${state.answers[state.currentQuestionIndex] === idx ? 'text-arc-blue' : 'text-slate-700'}">${opt}</span><div class="w-12 h-12 rounded-full border-4 flex items-center justify-center shrink-0 ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue' : 'border-slate-300'}">${state.answers[state.currentQuestionIndex] === idx ? '<div class="w-5 h-5 bg-white rounded-full"></div>' : ''}</div>`;
-                optionsBox.appendChild(btn);
+                btn.innerHTML = `<span class="text-3xl font-bold ${state.answers[state.currentQuestionIndex] === idx ? 'text-arc-blue' : 'text-slate-700'}">${opt}</span><div class="w-12 h-12 rounded-full border-4 ${state.answers[state.currentQuestionIndex] === idx ? 'border-arc-blue bg-arc-blue' : 'border-slate-300'}"></div>`;
+                container.appendChild(btn);
             });
             const nextBtn = document.getElementById('next-btn');
             nextBtn.disabled = state.answers[state.currentQuestionIndex] === undefined;
-            document.getElementById('next-btn-text').textContent = state.currentQuestionIndex === level.questions.length - 1 ? 'Transmit Data' : 'Validate Answer';
-            nextBtn.onclick = handleNext;
+            document.getElementById('next-btn-text').textContent = state.currentQuestionIndex === level.questions.length - 1 ? 'Transmit' : 'Confirm';
+            nextBtn.onclick = () => { if (state.currentQuestionIndex < level.questions.length - 1) { state.currentQuestionIndex++; renderQuestion(); } else { submitFinal(); } };
         }
-
-        function handleNext() { if (state.currentQuestionIndex < EXAM_DATA[state.activeLevelId].questions.length - 1) { state.currentQuestionIndex++; renderQuestion(); } else { submitFinal(); } }
 
         async function submitFinal() {
             window.switchView('processing');
-            const levelId = state.activeLevelId; 
-            const level = EXAM_DATA[levelId];
-            let correctCount = 0; 
-            let breakdown = `Candidate: ${state.userInfo.name}\nModule: ${level.title}\n\n`;
-            
+            const levelId = state.activeLevelId; const level = EXAM_DATA[levelId];
+            let correctCount = 0; let detailLog = `Candidate Analysis: ${state.userInfo.name}\n\n`;
             level.questions.forEach((q, idx) => {
-                const ans = state.answers[idx]; 
-                if (ans === q.correct) correctCount++;
-                breakdown += `Q${idx+1}: ${q.text}\nAns: ${q.options[ans]}\nStatus: ${ans===q.correct?'PASSED':'FAILED'}\n---\n`;
+                const ans = state.answers[idx]; if (ans === q.correct) correctCount++;
+                detailLog += `Q${idx+1}: ${q.text}\nAns: ${q.options[ans]} ${ans===q.correct?'[CORRECT]':'[INCORRECT]'}\n\n`;
             });
-
-            const percentage = Math.round((correctCount / level.questions.length) * 100);
-            const passed = percentage >= level.passScore;
+            const score = Math.round((correctCount / level.questions.length) * 100);
+            const passed = score >= level.passScore;
             
-            const sheetData = {
-                name: state.userInfo.name,
-                email: state.userInfo.email,
-                module: level.title,
-                score: `${percentage}%`,
-                status: passed ? 'PASSED' : 'FAILED',
-                timestamp: new Date().toLocaleString(),
-                details: breakdown
-            };
+            const payload = { name: state.userInfo.name, email: state.userInfo.email, module: level.title, score: `${score}%`, status: passed ? 'PASSED' : 'FAILED', timestamp: new Date().toLocaleString(), details: detailLog };
 
             try {
-                // 1. Post to Google Sheet
-                fetch(GOOGLE_SHEET_URL, {
-                    method: "POST",
-                    mode: "no-cors", 
-                    cache: "no-cache",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(sheetData)
-                });
-
-                // 2. Email Notification
-                if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { 
-                        candidate_name: state.userInfo.name, 
-                        candidate_email: state.userInfo.email, 
-                        module_title: level.title, 
-                        score: `${percentage}%`, 
-                        status: passed ? 'PASSED' : 'FAILED', 
-                        admin_email: ADMIN_EMAIL, 
-                        exam_details: breakdown
-                    });
-                }
-
-                if (passed) {
-                    if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId);
-                    if (state.unlockedLevel === levelId && levelId < 3) state.unlockedLevel = levelId + 1;
-                    saveProgress();
-                }
+                fetch(GOOGLE_SHEET_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+                if (EMAILJS_SERVICE_ID) await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { candidate_name: state.userInfo.name, candidate_email: state.userInfo.email, module_title: level.title, score: `${score}%`, status: passed ? 'PASSED' : 'FAILED', admin_email: ADMIN_EMAIL, exam_details: detailLog });
+                if (passed) { if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId); if (state.unlockedLevel === levelId && levelId < 3) state.unlockedLevel = levelId + 1; }
                 window.switchView('success');
-            } catch (err) { alert("Submission error."); window.showDashboard(); }
+            } catch (err) { console.error(err); window.showDashboard(); }
         }
 
-        document.getElementById('registration-form').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            const btn = document.getElementById('reg-submit-btn'); 
-            const btnTxt = document.getElementById('reg-btn-text');
-            btn.disabled = true; btnTxt.textContent = "Syncing Profile...";
-            state.userInfo.name = document.getElementById('user-name').value.trim();
-            state.userInfo.email = document.getElementById('user-email').value.trim().toLowerCase();
-            const stored = loadProgress(state.userInfo.email);
-            if (stored) { state.completedLevels = stored.completedLevels || []; state.unlockedLevel = stored.unlockedLevel || 1; }
-            else { state.completedLevels = []; state.unlockedLevel = 1; }
+        document.getElementById('registration-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            state.userInfo.name = document.getElementById('user-name').value;
+            state.userInfo.email = document.getElementById('user-email').value.toLowerCase();
             document.getElementById('display-name').textContent = state.userInfo.name;
             document.getElementById('nav-display-email').textContent = state.userInfo.email;
             document.getElementById('dropdown-full-name').textContent = state.userInfo.name;
             document.getElementById('dropdown-email').textContent = state.userInfo.email;
             document.getElementById('nav-user-initial').textContent = state.userInfo.name.charAt(0).toUpperCase();
             document.getElementById('candidate-footer-name').textContent = state.userInfo.name;
-            setTimeout(() => { window.showDashboard(); btn.disabled = false; btnTxt.textContent = "Initialize Portal Access"; }, 800);
-        });
-
-        window.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('user-dropdown');
-            const btn = document.querySelector('nav .relative button');
-            if (dropdown && !dropdown.contains(e.target) && btn && !btn.contains(e.target)) dropdown.classList.remove('show');
+            window.showDashboard();
         });
     </script>
 </body>
