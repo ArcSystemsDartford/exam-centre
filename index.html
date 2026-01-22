@@ -38,12 +38,12 @@
         .bg-arc-gradient { background: radial-gradient(circle at top left, #004a99 0%, #002d5e 100%); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans">
 
     <nav id="global-nav" class="hidden fixed top-0 left-0 w-full bg-white/90 backdrop-blur-xl z-50 border-b border-slate-100 px-6 py-4 shadow-sm text-left">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="image_b6e059.png" alt="Arc Systems" class="h-10 w-auto" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
+                <img src="image_b6e059.png" alt="Arc Systems Logo" class="h-10 w-auto" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
                 <div class="h-6 w-[1px] bg-slate-200 hidden md:block"></div>
                 <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block">Engineering Portal</span>
             </div>
@@ -106,37 +106,39 @@
     <div id="view-exam" class="view flex-col items-center p-8 content-area">
         <div class="max-w-5xl w-full text-left">
             <div class="flex justify-between items-end mb-12">
-                <div class="flex-1 mr-16">
+                <div class="flex-1 mr-16 text-left">
                     <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Validation Protocol</h2>
                     <div class="h-5 w-full bg-slate-200 rounded-full overflow-hidden border-4 border-white"><div id="exam-progress-bar" class="h-full bg-gradient-to-r from-arc-blue to-arc-teal transition-all duration-700" style="width: 0%"></div></div>
                 </div>
                 <div id="exam-counter" class="bg-white px-10 py-5 rounded-[2rem] border border-slate-100 font-black text-arc-blue shadow-xl text-2xl">1 / 15</div>
             </div>
-            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden">
+            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden text-left">
                 <div class="absolute top-0 left-0 w-4 h-full bg-arc-blue"></div>
                 <h3 id="question-text" class="text-4xl font-bold text-slate-900 mb-20 leading-tight">...</h3>
                 <div id="options-container" class="grid gap-6"></div>
-                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center">
-                    <p class="text-sm font-black uppercase tracking-[0.2em] text-slate-500">ID: <span id="candidate-footer-name" class="text-arc-blue">...</span></p>
-                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark disabled:opacity-20 transition-all flex items-center gap-5 text-2xl shadow-xl"><span id="next-btn-text">Confirm</span> <i data-lucide="chevron-right" class="w-8 h-8"></i></button>
+                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center text-left">
+                    <p class="text-sm font-black uppercase tracking-[0.2em] text-slate-500">ID: <span id="candidate-footer-name" class="text-arc-blue font-black underline">...</span></p>
+                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark disabled:opacity-20 transition-all flex items-center gap-5 text-2xl shadow-xl shadow-arc-blue/20 group"><span id="next-btn-text">Confirm Answer</span> <i data-lucide="chevron-right" class="w-8 h-8 group-hover:translate-x-2 transition-transform"></i></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="view-processing" class="view flex-col items-center justify-center p-4"><h3 class="text-6xl font-black text-slate-900 animate-pulse tracking-tighter uppercase">Encrypting & Transmitting...</h3></div>
+    <div id="view-processing" class="view flex-col items-center justify-center p-4"><h3 class="text-6xl font-black text-slate-900 animate-pulse tracking-tighter uppercase">Syncing to Cloud...</h3></div>
 
     <div id="view-success" class="view flex-col items-center justify-center p-4 content-area">
-        <div class="bg-white rounded-[5rem] shadow-2xl p-12 md:p-28 max-w-4xl w-full text-center space-y-16 fade-in">
+        <div class="bg-white rounded-[5rem] shadow-2xl p-12 md:p-28 max-w-4xl w-full text-center space-y-16 fade-in border border-slate-50">
             <i data-lucide="check-circle" class="w-32 h-32 text-emerald-500 mx-auto stroke-[2px]"></i>
             <h3 class="text-6xl font-black text-slate-900 uppercase">Module Verified</h3>
+            <p class="text-slate-500 text-xl font-medium">Data transmitted successfully to technical records.</p>
             <button onclick="window.showDashboard()" class="w-full bg-arc-blue text-white py-8 rounded-[2.5rem] text-3xl font-black hover:bg-arc-dark flex items-center justify-center gap-6">Return to Hub <i data-lucide="arrow-right" class="w-10 h-10"></i></button>
         </div>
     </div>
 
     <script>
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycby3wnjHgNcFEGPtu-qxkPgP8nMVLkUUDBTqp-KBCkGm6tkkWiCwpajuOLOe5zEBe5al/exec";
-        const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm"; const EMAILJS_SERVICE_ID = "service_bphlojw"; const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
+        const EMAILJS_SERVICE_ID = "service_bphlojw"; const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
+        const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm";
         if (EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
 
         const EXAM_DATA = {
@@ -162,14 +164,13 @@
         window.logout = function() { window.location.reload(); };
 
         window.showDashboard = function() {
-            const list = document.getElementById('level-list');
-            list.innerHTML = '';
+            const list = document.getElementById('level-list'); list.innerHTML = '';
             for (let id = 1; id <= state.unlockedLevel; id++) {
                 const level = EXAM_DATA[id]; const isCompleted = state.completedLevels.includes(id);
                 const card = document.createElement('div');
-                card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in`;
+                card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in text-left`;
                 card.onclick = () => window.showIntro(id);
-                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 ${isCompleted ? 'bg-emerald-100 text-emerald-600' : 'bg-arc-blue/5 text-arc-blue'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div><h2 class="text-5xl font-black text-slate-900 tracking-tighter">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium">${level.description}</p></div></div><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform">${isCompleted ? 'Log Found' : 'Launch'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div>`;
+                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 ${isCompleted ? 'bg-emerald-100 text-emerald-600' : 'bg-arc-blue/5 text-arc-blue'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div><h2 class="text-5xl font-black text-slate-900 tracking-tighter">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium">${level.description}</p></div></div><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform">${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div>`;
                 list.appendChild(card);
             }
             window.switchView('dashboard');
@@ -177,7 +178,7 @@
 
         window.showIntro = function(levelId) {
             state.activeLevelId = levelId; const level = EXAM_DATA[levelId];
-            document.getElementById('intro-content').innerHTML = `<h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium max-w-4xl">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24"><div class="space-y-10"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6">Module Syllabus</h3><ul class="space-y-6">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2"></div> ${obj}</li>`).join('')}</ul></div><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-inner"><p class="text-lg text-slate-500 italic leading-loose">Secure session authenticated for ${state.userInfo.email}. 80% pass required.</p></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue flex items-center justify-center gap-6 group"><i data-lucide="zap" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> Initiate Module</button>`;
+            document.getElementById('intro-content').innerHTML = `<h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium max-w-4xl text-left">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24"><div class="space-y-10"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left">Module Syllabus</h3><ul class="space-y-6">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0"></div> ${obj}</li>`).join('')}</ul></div><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-inner"><p class="text-lg text-slate-500 italic leading-loose text-left">Secure session authenticated for ${state.userInfo.email}. 80% pass required.</p></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue flex items-center justify-center gap-6 group"><i data-lucide="zap" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> Initiate Module</button>`;
             window.switchView('intro');
         };
 
@@ -198,26 +199,41 @@
             });
             const nextBtn = document.getElementById('next-btn');
             nextBtn.disabled = state.answers[state.currentQuestionIndex] === undefined;
-            document.getElementById('next-btn-text').textContent = state.currentQuestionIndex === level.questions.length - 1 ? 'Transmit' : 'Confirm';
+            document.getElementById('next-btn-text').textContent = state.currentQuestionIndex === level.questions.length - 1 ? 'Transmit Data' : 'Confirm Answer';
             nextBtn.onclick = () => { if (state.currentQuestionIndex < level.questions.length - 1) { state.currentQuestionIndex++; renderQuestion(); } else { submitFinal(); } };
         }
 
         async function submitFinal() {
             window.switchView('processing');
             const levelId = state.activeLevelId; const level = EXAM_DATA[levelId];
-            let correctCount = 0; let detailLog = `Candidate Analysis: ${state.userInfo.name}\n\n`;
+            let correctCount = 0; let breakdown = `Candidate Analysis: ${state.userInfo.name}\nModule: ${level.title}\n\n`;
             level.questions.forEach((q, idx) => {
                 const ans = state.answers[idx]; if (ans === q.correct) correctCount++;
-                detailLog += `Q${idx+1}: ${q.text}\nAns: ${q.options[ans]} ${ans===q.correct?'[CORRECT]':'[INCORRECT]'}\n\n`;
+                breakdown += `Q${idx+1}: ${q.text}\nAns: ${q.options[ans]} ${ans===q.correct?'[CORRECT]':'[INCORRECT]'}\n\n`;
             });
-            const score = Math.round((correctCount / level.questions.length) * 100);
-            const passed = score >= level.passScore;
+            const percentage = Math.round((correctCount / level.questions.length) * 100);
+            const passed = percentage >= level.passScore;
             
-            const payload = { name: state.userInfo.name, email: state.userInfo.email, module: level.title, score: `${score}%`, status: passed ? 'PASSED' : 'FAILED', timestamp: new Date().toLocaleString(), details: detailLog };
+            // Generate link for the next assessment level
+            let nextLevelUrl = "Max Level Reached";
+            if (passed && levelId < 3) {
+                const baseUrl = window.location.origin + window.location.pathname;
+                nextLevelUrl = `${baseUrl}?level=${levelId + 1}`;
+            } else if (!passed) { nextLevelUrl = "N/A - Failed Threshold"; }
+
+            const payload = { 
+                name: state.userInfo.name, 
+                email: state.userInfo.email, 
+                module: level.title, 
+                score: `${percentage}%`, 
+                status: passed ? 'PASSED' : 'FAILED', 
+                timestamp: new Date().toLocaleString(), 
+                details: `Next Level Access: ${nextLevelUrl}\n\n${breakdown}`
+            };
 
             try {
                 fetch(GOOGLE_SHEET_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-                if (EMAILJS_SERVICE_ID) await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { candidate_name: state.userInfo.name, candidate_email: state.userInfo.email, module_title: level.title, score: `${score}%`, status: passed ? 'PASSED' : 'FAILED', admin_email: ADMIN_EMAIL, exam_details: detailLog });
+                if (EMAILJS_SERVICE_ID) await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { candidate_name: state.userInfo.name, candidate_email: state.userInfo.email, module_title: level.title, score: `${percentage}%`, status: passed ? 'PASSED' : 'FAILED', admin_email: ADMIN_EMAIL, exam_details: payload.details });
                 if (passed) { if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId); if (state.unlockedLevel === levelId && levelId < 3) state.unlockedLevel = levelId + 1; }
                 window.switchView('success');
             } catch (err) { console.error(err); window.showDashboard(); }
