@@ -69,7 +69,6 @@
                             <td class="p-6 text-sm text-slate-500 font-medium">${row.timestamp || '---'}</td>
                             <td class="p-6">
                                 <p class="font-black text-slate-900 text-sm">${row.name || 'Unknown'}</p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tight">${row.email || 'N/A'}</p>
                             </td>
                             <td class="p-6 text-sm font-bold text-slate-700">${row.module || 'N/A'}</td>
                             <td class="p-6 text-sm font-black text-blue-600">${row.score || '0%'}</td>
@@ -92,13 +91,10 @@
             const data = records[index];
             const contentContainer = document.getElementById('modal-content');
             const rawContent = data.details || "No technical breakdown available.";
-            
-            // Convert text URLs into clickable links for the admin
             const linkedContent = rawContent.replace(
                 /(https?:\/\/[^\s]+)/g, 
                 '<a href="$1" target="_blank" class="text-blue-600 underline font-black">$1</a>'
             );
-            
             contentContainer.innerHTML = linkedContent; 
             document.getElementById('details-modal').classList.add('active');
             lucide.createIcons();
