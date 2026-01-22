@@ -21,7 +21,6 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -137,9 +136,6 @@
 
     <script>
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycby3wnjHgNcFEGPtu-qxkPgP8nMVLkUUDBTqp-KBCkGm6tkkWiCwpajuOLOe5zEBe5al/exec";
-        const EMAILJS_SERVICE_ID = "service_bphlojw"; const EMAILJS_TEMPLATE_ID = "template_fkxc7pe"; const ADMIN_EMAIL = "daniel.muckle@arcsystems.co.uk";
-        const EMAILJS_PUBLIC_KEY = "kVTe1LZuVB6zcSqUm";
-        if (EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
 
         const EXAM_DATA = {
             1: { title: "1st line engineering exam", icon: "cpu", description: "Assessment of initial hardware identification, OS navigation, and core desktop support logic.", objectives: ["Hardware Diagnostics", "OS Navigation", "Basic Networking", "Peripheral Support"], passScore: 80, questions: [{ id: 1, text: "Which component is often referred to as the 'brain' of the computer?", options: ["RAM", "Hard Drive", "CPU", "Power Supply"], correct: 2 }, { id: 2, text: "What does RAM stand for?", options: ["Random Access Memory", "Readily Available Memory", "Remote Access Module", "Rapid Analysis Method"], correct: 0 }, { id: 3, text: "Which of these is a common operating system developed by Microsoft?", options: ["macOS", "Linux", "Windows", "Android"], correct: 2 }, { id: 4, text: "What is the primary function of a GPU?", options: ["Storing files", "Processing graphics/images", "Connecting to the internet", "Managing power"], correct: 1 }, { id: 5, text: "Which port is most commonly used to connect a mouse or keyboard today?", options: ["VGA", "Serial", "USB", "Parallel"], correct: 2 }, { id: 6, text: "What is the standard shortcut to 'Copy' text in Windows?", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], correct: 2 }, { id: 7, text: "Which of these is considered 'volatile' memory?", options: ["SSD", "RAM", "Hard Drive", "USB Flash Drive"], correct: 1 }, { id: 8, text: "What does 'WWW' stand for in a web address?", options: ["World Wide Web", "Web Wide World", "Western Web Wireless", "Whole Wide Web"], correct: 0 }, { id: 9, text: "Which device is used to connect multiple computers in a local network?", options: ["Modem", "Switch", "Monitor", "Printer"], correct: 1 }, { id: 10, text: "What is the main purpose of a 'Firewall'?", options: ["Speeding up the internet", "Cooling the CPU", "Blocking unauthorized access", "Cleaning the keyboard"], correct: 2 }, { id: 11, text: "What file extension is typically used for a compressed folder?", options: [".exe", ".zip", ".txt", ".mp3"], correct: 1 }, { id: 12, text: "Which of these is an input device?", options: ["Monitor", "Speaker", "Printer", "Scanner"], correct: 3 }, { id: 13, text: "What does SSD stand for?", options: ["Solid State Drive", "Super Speed Disk", "System Storage Device", "Secure Static Drive"], correct: 0 }, { id: 14, text: "In computing, what is 1 Terabyte equal to?", options: ["100 Megabytes", "1000 Gigabytes", "10 Gigabytes", "1,000,000 Bytes"], correct: 1 }, { id: 15, text: "What should you do first if a computer peripheral stops working?", options: ["Buy a new computer", "Check the cable connection", "Reinstall Windows", "Call the manufacturer"], correct: 1 }] },
@@ -214,7 +210,6 @@
             const percentage = Math.round((correctCount / level.questions.length) * 100);
             const passed = percentage >= level.passScore;
             
-            // Generate link for the next assessment level
             let nextLevelUrl = "Max Level Reached";
             if (passed && levelId < 3) {
                 const baseUrl = window.location.origin + window.location.pathname;
@@ -232,8 +227,7 @@
             };
 
             try {
-                fetch(GOOGLE_SHEET_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-                if (EMAILJS_SERVICE_ID) await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { candidate_name: state.userInfo.name, candidate_email: state.userInfo.email, module_title: level.title, score: `${percentage}%`, status: passed ? 'PASSED' : 'FAILED', admin_email: ADMIN_EMAIL, exam_details: payload.details });
+                await fetch(GOOGLE_SHEET_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
                 if (passed) { if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId); if (state.unlockedLevel === levelId && levelId < 3) state.unlockedLevel = levelId + 1; }
                 window.switchView('success');
             } catch (err) { console.error(err); window.showDashboard(); }
