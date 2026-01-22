@@ -4,42 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arc Systems Admin (Local)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: { extend: { colors: { arc: { blue: '#004a99', teal: '#38b6ff', dark: '#002d5e' } } } }
         }
     </script>
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .view { display: none; } 
         .view.active { display: block; }
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen">
+<body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal selection:text-white">
 
-    <!-- Login View -->
+    <!-- Login View (No Form tag to prevent redirection) -->
     <div id="view-login" class="view active min-h-screen flex items-center justify-center bg-arc-dark p-6">
         <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center fade-in">
-            <img src="arc.jpg" alt="Logo" class="h-20 mx-auto mb-10" onerror="this.src='https://placehold.co/200x80?text=Arc+Systems'">
-            <h1 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wider text-center">Admin Access</h1>
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8 text-center">Secure Management Hub</p>
+            <div class="mb-10">
+                <img src="arc.jpg" alt="Logo" class="h-20 mx-auto mb-6" onerror="this.src='https://placehold.co/200x80?text=Arc+Systems'">
+                <h1 class="text-2xl font-black text-slate-800 uppercase tracking-wider">Admin Access</h1>
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mt-2">Secure Management Hub</p>
+            </div>
             
-            <form id="admin-login-form">
-                <div class="space-y-6">
-                    <input required type="password" id="admin-pass" placeholder="Authorization Key" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all">
-                    <button type="submit" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl shadow-arc-blue/20">
-                        Enter Dashboard
-                    </button>
-                    <p id="login-err" class="text-red-500 text-xs font-black uppercase tracking-tighter hidden flex items-center justify-center gap-2">
-                        <i data-lucide="alert-circle" class="w-4 h-4"></i> Invalid Access Key
-                    </p>
+            <div class="space-y-6">
+                <div class="relative">
+                    <input type="password" id="admin-pass" placeholder="Authorization Key" 
+                           onkeydown="if(event.key === 'Enter') window.checkAdmin()"
+                           class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all placeholder:text-slate-300">
                 </div>
-            </form>
+                <button onclick="window.checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl shadow-arc-blue/20 active:scale-[0.98]">
+                    Enter Dashboard
+                </button>
+                <p id="login-err" class="text-red-500 text-xs font-black uppercase tracking-tighter hidden flex items-center justify-center gap-2">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-left"></i> Invalid Access Key
+                </p>
+            </div>
         </div>
     </div>
 
@@ -53,7 +65,7 @@
             </div>
             <button onclick="location.reload()" class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all font-bold text-xs">
                 <span>Sign Out</span>
-                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <i data-lucide="log-out" class="w-4 h-4 text-left"></i>
             </button>
         </nav>
 
@@ -61,14 +73,14 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 text-left">
                 <div>
                     <h1 class="text-5xl font-black text-slate-900 tracking-tighter">Candidate Log</h1>
-                    <p class="text-slate-400 mt-2 font-medium">Local results stored on this device from the assessment portal.</p>
+                    <p class="text-slate-400 mt-2 font-medium">Local synchronization of assessment results from this machine.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Main Feed -->
+                <!-- Feed -->
                 <div class="lg:col-span-3 space-y-4">
-                    <div id="submissions-list" class="space-y-4 text-left">
+                    <div id="submissions-list" class="space-y-4 text-left text-left">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -76,13 +88,13 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28">
-                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4">Portal Metrics</h3>
+                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4">Metrics</h3>
                         <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 mb-8 text-left">
-                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Total Records</p>
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Records Found</p>
                             <p id="stat-total" class="text-4xl font-black text-arc-blue">0</p>
                         </div>
-                        <div class="space-y-4 text-left">
-                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Support Directs</p>
+                        <div class="space-y-4 text-left text-left text-left">
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-4">Quick Support</p>
                             <a href="mailto:adam.ayliffe@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline">Adam Ayliffe (Tech Eng)</a>
                             <a href="mailto:daniel.muckle@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline">Daniel Muckle (SDM)</a>
                         </div>
@@ -92,50 +104,42 @@
         </div>
     </div>
 
-    <!-- Detail Modal -->
+    <!-- Result Detail Modal -->
     <div id="detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in">
             <div class="p-10 border-b border-slate-50 flex justify-between items-start bg-slate-50/50">
-                <div class="text-left">
+                <div class="text-left text-left text-left">
                     <h2 id="modal-name" class="text-3xl font-black text-slate-900 tracking-tight">Candidate Name</h2>
                     <p id="modal-email" class="text-xs font-bold text-arc-blue uppercase tracking-widest mt-3">email@example.com</p>
                 </div>
                 <button onclick="closeModal()" class="bg-white p-2 rounded-xl text-slate-300 hover:text-red-500 transition-all">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+                    <i data-lucide="x" class="w-6 h-6 text-left"></i>
                 </button>
             </div>
-            <div id="modal-content" class="p-10 overflow-y-auto space-y-8 text-left"></div>
+            <div id="modal-content" class="p-10 overflow-y-auto space-y-8 text-left text-left text-left text-left"></div>
         </div>
     </div>
 
     <script>
         const DB_KEY = "ARC_EXAM_RESULTS";
 
-        // Use standard event listener to prevent scope issues
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('admin-login-form');
-            if (loginForm) {
-                loginForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const passInput = document.getElementById('admin-pass');
-                    const pass = passInput.value;
-                    
-                    if (pass === 'A2c5ySt3m5ExamR35u1ts') {
-                        document.getElementById('view-login').classList.remove('active');
-                        document.getElementById('view-dashboard').classList.add('active');
-                        initDashboard();
-                    } else {
-                        const err = document.getElementById('login-err');
-                        err.classList.remove('hidden');
-                        passInput.value = '';
-                        setTimeout(() => err.classList.add('hidden'), 3000);
-                    }
-                });
+        // Main Login Logic
+        window.checkAdmin = function() {
+            const passInput = document.getElementById('admin-pass');
+            const pass = passInput.value.trim();
+            const correctKey = 'A2c5ySt3m5ExamR35u1ts';
+            
+            if (pass === correctKey) {
+                document.getElementById('view-login').classList.remove('active');
+                document.getElementById('view-dashboard').classList.add('active');
+                initDashboard();
+            } else {
+                const err = document.getElementById('login-err');
+                err.classList.remove('hidden');
+                passInput.value = '';
+                setTimeout(() => err.classList.add('hidden'), 3000);
             }
-            lucide.createIcons();
-        });
+        };
 
         function initDashboard() {
             const list = document.getElementById('submissions-list');
@@ -144,21 +148,21 @@
             
             list.innerHTML = '';
             if (data.length === 0) {
-                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">No local candidate results found on this device.</div>';
+                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">No local candidate results found.</div>';
                 lucide.createIcons();
                 return;
             }
 
             data.forEach((res, idx) => {
                 const card = document.createElement('div');
-                card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all flex justify-between items-center group text-left";
+                card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all flex justify-between items-center group text-left text-left text-left text-left";
                 card.innerHTML = `
                     <div class="flex items-center gap-6">
-                        <div class="w-16 h-16 rounded-2xl ${res.passed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
-                            <i data-lucide="${res.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
+                        <div class="w-16 h-16 rounded-2xl ${res.passed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+                            <i data-lucide="${res.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8 text-left"></i>
                         </div>
-                        <div>
-                            <h4 class="text-lg font-black text-slate-800">${res.candidateName}</h4>
+                        <div class="text-left">
+                            <h4 class="text-lg font-black text-slate-800 leading-tight">${res.candidateName}</h4>
                             <p class="text-xs font-bold text-slate-400 mt-0.5">${res.candidateEmail}</p>
                         </div>
                     </div>
@@ -167,8 +171,8 @@
                             <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle}</p>
                             <p class="text-2xl font-black ${res.passed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score}%</p>
                         </div>
-                        <button onclick='window.viewDetails(${idx})' class="bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark transition-all shadow-lg">
-                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        <button onclick='window.viewDetails(${idx})' class="bg-arc-blue text-white w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-dark transition-all shadow-lg text-left">
+                            <i data-lucide="eye" class="w-5 h-5 text-left"></i>
                         </button>
                     </div>`;
                 list.appendChild(card);
@@ -185,34 +189,37 @@
             const nextLink = `https://arcsystemsdartford.github.io/exam-centre/?level=${res.levelId + 1}`;
 
             content.innerHTML = `
-                <div class="grid grid-cols-2 gap-6 text-left">
-                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Final Status</p>
+                <div class="grid grid-cols-2 gap-6 text-left text-left text-left text-left">
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Outcome</p>
                         <p class="text-2xl font-black ${res.passed ? 'text-emerald-500' : 'text-red-500'}">${res.passed ? 'PASSED' : 'FAILED'}</p>
                     </div>
-                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Logged At</p>
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Time</p>
                         <p class="text-xs font-bold text-slate-600">${new Date(res.timestamp).toLocaleString()}</p>
                     </div>
                 </div>
                 ${res.passed && res.levelId < 3 ? `
-                    <div class="p-8 bg-arc-blue/5 rounded-[2.5rem] border-2 border-arc-blue/10 space-y-4 text-left">
+                    <div class="p-8 bg-arc-blue/5 rounded-[2.5rem] border-2 border-arc-blue/10 space-y-4 text-left text-left text-left text-left text-left">
                         <p class="text-xs font-black text-arc-blue uppercase tracking-[0.2em]">Authorized Link (Module ${res.levelId + 1})</p>
                         <div class="flex gap-3">
                             <input readonly id="copy-inp" value="${nextLink}" class="bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-xs font-mono w-full text-slate-500 focus:outline-none">
-                            <button onclick="copyToClipboard()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark">Copy Link</button>
+                            <button onclick="copyToClipboard()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs shrink-0 hover:bg-arc-dark shadow-md text-left">Copy URL</button>
                         </div>
-                        <p class="text-[10px] text-slate-400">Provide this link to the candidate to authorize the next engineering module.</p>
+                        <p class="text-[10px] text-slate-400 font-medium">Send this link to the candidate to authorize their next evaluation module.</p>
                     </div>
                 ` : ''}
-                <div class="space-y-4 text-left">
-                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em]">Response Breakdown</p>
+                <div class="space-y-4 text-left text-left text-left text-left text-left">
+                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em]">Full Breakdown</p>
                     <div class="space-y-3">
                         ${res.details.map(log => `
                             <div class="p-5 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'}">
                                 <p class="text-sm font-bold text-slate-800 mb-2 leading-tight text-left">${log.q}</p>
-                                <p class="text-xs font-semibold ${log.status === 'Correct' ? 'text-emerald-600' : 'text-red-600'} text-left">Answered: ${log.a}</p>
-                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 italic text-left">Expected Response: ${log.correctVal}</p>` : ''}
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[9px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'}">${log.status}</span>
+                                    <span class="text-xs font-semibold text-slate-600">Answered: ${log.a}</span>
+                                </div>
+                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-2 italic text-left">Correct: ${log.correctVal}</p>` : ''}
                             </div>`).join('')}
                     </div>
                 </div>
@@ -226,10 +233,11 @@
             const el = document.getElementById('copy-inp');
             el.select();
             document.execCommand('copy');
-            alert("Authorized progression link copied to clipboard.");
+            alert("Progression link copied to clipboard.");
         };
 
-        window.onkeydown = function(e) { if(e.key === "Escape") closeModal(); };
+        // Initialize icons on first load
+        lucide.createIcons();
     </script>
 </body>
 </html>
