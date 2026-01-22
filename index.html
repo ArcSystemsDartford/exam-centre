@@ -29,27 +29,38 @@
         body { font-family: 'Inter', sans-serif; }
         .view { display: none; }
         .view.active { display: flex; } 
+        
         .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input::placeholder { color: #94a3b8; font-weight: 400; }
+        
         #user-dropdown { display: none; }
         #user-dropdown.show { display: block; }
+        
         .content-area { padding-top: 100px; }
-        .bg-arc-gradient { background: radial-gradient(circle at top left, #004a99 0%, #002d5e 100%); }
+
+        .bg-arc-gradient {
+            background: radial-gradient(circle at top left, #004a99 0%, #002d5e 100%);
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal selection:text-white flex flex-col font-sans text-left">
 
     <!-- Global Navigation -->
-    <nav id="global-nav" class="hidden fixed top-0 left-0 w-full bg-white/95 backdrop-blur-xl z-50 border-b border-slate-100 px-6 py-4 shadow-sm text-left">
-        <div class="max-w-7xl mx-auto flex justify-between items-center text-left">
-            <div class="flex items-center gap-4 text-left">
+    <nav id="global-nav" class="hidden fixed top-0 left-0 w-full bg-white/95 backdrop-blur-xl z-50 border-b border-slate-100 px-6 py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
                 <img src="arc.jpg" alt="Arc Systems Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/150x40?text=Arc+Systems'">
-                <div class="h-6 w-[1px] bg-slate-200 hidden md:block text-left"></div>
-                <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block text-left">Exam Evaluation Portal</span>
+                <div class="h-6 w-[1px] bg-slate-200 hidden md:block"></div>
+                <span class="text-arc-blue font-black uppercase tracking-[0.2em] text-[10px] hidden md:block">Exam Evaluation Portal</span>
             </div>
             
-            <div class="relative text-left">
-                <button onclick="toggleUserDropdown()" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm flex items-center gap-3 hover:border-arc-teal transition-all group text-left">
+            <div class="relative">
+                <button onclick="toggleUserDropdown()" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 shadow-sm flex items-center gap-3 hover:border-arc-teal transition-all group">
                     <div id="nav-user-initial" class="w-8 h-8 rounded-xl bg-arc-blue flex items-center justify-center text-white text-sm font-black uppercase">U</div>
                     <div class="text-left hidden sm:block">
                         <p id="nav-display-email" class="text-slate-800 font-black text-xs truncate max-w-[150px]">email@example.com</p>
@@ -59,12 +70,13 @@
                 
                 <div id="user-dropdown" class="absolute right-0 mt-3 w-64 bg-white border border-slate-100 rounded-3xl shadow-2xl z-50 overflow-hidden fade-in text-left">
                     <div class="p-5 border-b border-slate-50 bg-slate-50/50">
-                        <p id="dropdown-full-name" class="text-slate-900 font-black truncate text-sm text-left">Candidate Name</p>
-                        <p id="dropdown-email" class="text-slate-500 text-[10px] uppercase font-bold tracking-wider truncate text-left">email@example.com</p>
+                        <p id="dropdown-full-name" class="text-slate-900 font-black truncate text-sm">Candidate Name</p>
+                        <p id="dropdown-email" class="text-slate-500 text-[10px] uppercase font-bold tracking-wider truncate">email@example.com</p>
                     </div>
                     <div class="p-2">
-                        <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-600 text-sm font-bold hover:bg-red-50 rounded-2xl transition-colors text-left">
-                            <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out & Exit
+                        <button onclick="logout()" class="w-full flex items-center gap-3 p-4 text-red-600 text-sm font-bold hover:bg-red-50 rounded-2xl transition-colors">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            Sign Out & Exit
                         </button>
                     </div>
                 </div>
@@ -74,41 +86,56 @@
 
     <!-- Registration View -->
     <div id="view-registration" class="view active flex-1 flex-col items-center justify-center p-6 bg-arc-gradient">
-        <div class="max-w-4xl w-full bg-white rounded-[3.5rem] shadow-2xl p-10 md:p-20 border border-white/20 mb-16 fade-in text-center relative overflow-hidden">
+        <div class="max-w-4xl w-full bg-white rounded-[3.5rem] shadow-2xl p-10 md:p-20 border border-white/20 mb-16 fade-in text-center relative overflow-hidden text-center">
             <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-arc-blue to-arc-teal"></div>
+            
             <div class="mb-14 text-center">
-                <div class="flex justify-center mb-10"><img src="arc.jpg" alt="Arc Systems Logo" class="h-24 w-auto object-contain"></div>
+                <div class="flex justify-center mb-10">
+                    <img src="arc.jpg" alt="Arc Systems Logo" class="h-24 w-auto object-contain" onerror="this.src='https://placehold.co/400x120?text=Arc+Systems'">
+                </div>
                 <h1 class="text-5xl font-black text-slate-900 tracking-tighter mb-4 uppercase leading-tight">Exam Portal</h1>
                 <p class="text-slate-500 text-xl leading-relaxed max-w-2xl mx-auto font-medium">Identify yourself to begin or resume your technical assessments.</p>
             </div>
-            <form id="registration-form" class="space-y-10 text-left" onsubmit="handleLogin(event)">
+
+            <form id="registration-form" class="space-y-10 text-left">
                 <div class="grid md:grid-cols-2 gap-10">
                     <div class="space-y-3">
                         <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em] ml-1">Full Identity</label>
                         <input required type="text" id="user-name" placeholder="John Doe" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 px-8 focus:outline-none focus:border-arc-teal transition-all font-bold text-slate-800 text-lg shadow-inner">
                     </div>
-                    <div class="space-y-3 text-left">
+                    <div class="space-y-3">
                         <label class="block text-[10px] font-black text-arc-blue uppercase tracking-[0.3em] ml-1">Work Email</label>
                         <input required type="email" id="user-email" placeholder="email@address.com" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl py-6 px-8 focus:outline-none focus:border-arc-teal transition-all font-bold text-slate-800 text-lg shadow-inner">
                     </div>
                 </div>
+
                 <button type="submit" id="reg-submit-btn" class="w-full bg-arc-blue text-white py-7 rounded-[2rem] font-black text-2xl hover:bg-arc-dark hover:scale-[1.01] active:scale-[0.99] transition-all shadow-2xl flex items-center justify-center gap-5 mt-6">
-                    Initialize Portal Access <i data-lucide="chevron-right" class="w-8 h-8"></i>
+                    <span id="reg-btn-text">Initialize Portal Access</span> 
+                    <i data-lucide="chevron-right" class="w-8 h-8"></i>
                 </button>
             </form>
         </div>
         
+        <!-- Bottom Contact Details -->
         <div class="text-center text-white/60 text-sm leading-relaxed max-w-5xl fade-in pb-12">
             <p class="font-black mb-8 text-arc-teal uppercase tracking-[0.4em] text-[11px] text-center">Technical Support Gateway</p>
             <div class="flex flex-col md:flex-row justify-center gap-x-20 gap-y-10 text-left">
+                <!-- Adam -->
                 <div class="flex flex-col gap-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-arc-teal">Technical Engineer</span>
-                    <a href="mailto:adam.ayliffe@arcsystems.co.uk" class="flex items-center gap-3 font-bold text-white tracking-wide text-xs hover:underline"><i data-lucide="mail" class="w-4 h-4 text-arc-teal"></i> adam.ayliffe@arcsystems.co.uk</a>
+                    <a href="mailto:adam.ayliffe@arcsystems.co.uk" class="flex items-center gap-3 font-bold text-white tracking-wide text-xs hover:underline">
+                        <i data-lucide="mail" class="w-4 h-4 text-arc-teal"></i>
+                        adam.ayliffe@arcsystems.co.uk
+                    </a>
                     <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Arc Systems</span>
                 </div>
+                <!-- Daniel -->
                 <div class="flex flex-col gap-1">
                     <span class="text-[10px] font-black uppercase tracking-widest text-arc-teal">Service Desk Manager</span>
-                    <a href="mailto:daniel.muckle@arcsystems.co.uk" class="flex items-center gap-3 font-bold text-white tracking-wide text-xs hover:underline"><i data-lucide="mail" class="w-4 h-4 text-arc-teal"></i> daniel.muckle@arcsystems.co.uk</a>
+                    <a href="mailto:daniel.muckle@arcsystems.co.uk" class="flex items-center gap-3 font-bold text-white tracking-wide text-xs hover:underline">
+                        <i data-lucide="mail" class="w-4 h-4 text-arc-teal"></i>
+                        daniel.muckle@arcsystems.co.uk
+                    </a>
                     <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest">Arc Systems</span>
                 </div>
             </div>
@@ -117,9 +144,9 @@
 
     <!-- Dashboard View -->
     <div id="view-dashboard" class="view flex-col min-h-screen max-w-6xl mx-auto px-8 content-area pb-24 text-left">
-        <header class="mb-16 fade-in text-left">
+        <header class="mb-16 fade-in">
             <h1 class="text-7xl font-black text-slate-900 tracking-tighter flex items-center gap-6 leading-tight">
-                <i data-lucide="terminal" class="text-arc-blue w-20 h-20 text-left"></i> Dashboard
+                <i data-lucide="terminal" class="text-arc-blue w-20 h-20"></i> Dashboard
             </h1>
             <p class="text-slate-500 mt-8 text-2xl font-medium leading-relaxed max-w-2xl text-left">
                 Welcome back, <span id="display-name" class="text-arc-blue font-black underline decoration-arc-teal decoration-4 underline-offset-8">Candidate</span>. <br>
@@ -129,39 +156,40 @@
         <div id="level-list" class="grid gap-12 w-full mb-32 fade-in text-left"></div>
     </div>
 
-    <!-- Intro/Exam/Processing/Success are consistent with current functionality -->
+    <!-- Intro View -->
     <div id="view-intro" class="view min-h-screen flex-col items-center justify-center p-6 content-area pb-20 text-left">
         <div class="max-w-5xl w-full flex flex-col fade-in">
             <button onclick="window.showDashboard()" class="flex items-center gap-3 text-slate-400 hover:text-arc-blue font-black mb-10 transition-colors self-start text-sm uppercase tracking-[0.4em]">
                 <i data-lucide="arrow-left" class="w-5 h-5"></i> Back to Overview
             </button>
-            <div id="intro-content" class="bg-white rounded-[4.5rem] p-12 md:p-24 border border-slate-100 shadow-2xl relative overflow-hidden">
+            <div id="intro-content" class="bg-white rounded-[4.5rem] p-12 md:p-24 border border-slate-100 shadow-2xl relative overflow-hidden text-left">
                 <div class="absolute top-0 right-0 w-80 h-80 bg-arc-blue/5 rounded-full -mr-40 -mt-40 opacity-50"></div>
             </div>
         </div>
     </div>
 
+    <!-- Exam View -->
     <div id="view-exam" class="view min-h-screen flex-col items-center p-8 md:p-16 content-area pb-20 text-left">
         <div class="max-w-5xl w-full fade-in">
             <div class="flex justify-between items-end mb-12">
                 <div class="flex-1 mr-16 text-left">
-                    <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Validation Protocol</h2>
+                    <h2 class="text-[11px] font-black text-arc-blue uppercase tracking-[0.6em] mb-5">Evaluation Protocol</h2>
                     <div class="h-5 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner border-4 border-white">
                         <div id="exam-progress-bar" class="h-full bg-gradient-to-r from-arc-blue to-arc-teal transition-all duration-700" style="width: 0%"></div>
                     </div>
                 </div>
                 <div id="exam-counter" class="bg-white px-10 py-5 rounded-[2rem] border border-slate-100 font-black text-arc-blue shadow-xl text-2xl">1 / 15</div>
             </div>
-            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden">
+            <div class="bg-white rounded-[4.5rem] shadow-2xl border border-slate-100 p-12 md:p-24 relative overflow-hidden text-left">
                 <div class="absolute top-0 left-0 w-4 h-full bg-arc-blue"></div>
                 <h3 id="question-text" class="text-4xl font-bold text-slate-900 mb-20 leading-[1.15] text-left">...</h3>
                 <div id="options-container" class="grid gap-6"></div>
-                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center text-left">
+                <div class="mt-24 pt-14 border-t border-slate-100 flex justify-between items-center">
                     <div class="flex items-center gap-4 text-slate-400">
-                        <div class="w-3.5 h-3.5 bg-arc-teal rounded-full animate-pulse"></div>
+                        <div class="w-3.5 h-3.5 bg-arc-teal rounded-full animate-pulse text-left"></div>
                         <p class="text-sm font-black uppercase tracking-[0.2em] text-slate-500">Candidate Session: <span id="candidate-footer-name" class="text-arc-blue underline underline-offset-8 font-black">...</span></p>
                     </div>
-                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark transition-all shadow-2xl flex items-center gap-5 text-2xl group">
+                    <button id="next-btn" disabled class="bg-arc-blue text-white px-16 py-7 rounded-[2rem] font-black hover:bg-arc-dark disabled:opacity-20 transition-all flex items-center gap-5 text-2xl group">
                         <span id="next-btn-text">Confirm Entry</span> <i data-lucide="chevron-right" class="w-8 h-8 group-hover:translate-x-2 transition-transform"></i>
                     </button>
                 </div>
@@ -169,17 +197,19 @@
         </div>
     </div>
 
+    <!-- Processing View -->
     <div id="view-processing" class="view min-h-screen items-center justify-center p-4 text-center">
-        <div class="text-center space-y-12 text-center">
+        <div class="text-center space-y-12">
             <div class="relative inline-block scale-[2.5]">
                 <div class="w-16 h-16 border-[6px] border-arc-blue/10 rounded-full"></div>
                 <div class="w-16 h-16 border-[6px] border-arc-teal border-t-transparent rounded-full animate-spin absolute top-0 text-center"></div>
             </div>
             <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase">Syncing Protocol</h3>
-            <p class="text-arc-blue font-black uppercase tracking-[0.5em] text-sm text-center">Writing performance data to local records</p>
+            <p class="text-arc-blue font-black uppercase tracking-[0.5em] text-sm text-center">Recording performance data to secure vault</p>
         </div>
     </div>
 
+    <!-- Success View -->
     <div id="view-success" class="view min-h-screen items-center justify-center p-4 content-area pb-20 text-center">
         <div class="bg-white rounded-[5rem] shadow-2xl p-12 md:p-28 max-w-4xl w-full text-center space-y-16 border border-slate-50 fade-in text-center">
             <div class="flex justify-center text-center">
@@ -188,11 +218,11 @@
                 </div>
             </div>
             <div class="space-y-6 text-center">
-                <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Module Verified</h3>
-                <p class="text-slate-500 text-3xl font-medium max-w-2xl mx-auto leading-relaxed text-center">Your results have been processed and stored in the database.</p>
+                <h3 class="text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none text-center">Module Verified</h3>
+                <p class="text-slate-500 text-3xl font-medium max-w-2xl mx-auto leading-relaxed text-center">Your results have been processed and stored in the local Arc Systems database.</p>
             </div>
             <button onclick="window.showDashboard()" class="w-full bg-arc-blue text-white py-8 rounded-[2.5rem] text-3xl font-black hover:bg-arc-dark transition-all shadow-2xl flex items-center justify-center gap-6">
-                Return to Hub <i data-lucide="arrow-right" class="w-10 h-10"></i>
+                Return to Assessment Hub <i data-lucide="arrow-right" class="w-10 h-10"></i>
             </button>
         </div>
     </div>
@@ -202,35 +232,19 @@
         const DB_KEY = "ARC_EXAM_RESULTS";
         const USER_KEY = "ARC_CANDIDATE_PROGRESS";
 
-        function getResults() {
-            return JSON.parse(localStorage.getItem(DB_KEY) || "[]");
-        }
-        function saveResult(result) {
-            const results = getResults();
-            results.push(result);
-            localStorage.setItem(DB_KEY, JSON.stringify(results));
-        }
-        function getCandidate(email) {
-            const users = JSON.parse(localStorage.getItem(USER_KEY) || "{}");
-            return users[email] || null;
-        }
-        function saveCandidate(candidate) {
-            const users = JSON.parse(localStorage.getItem(USER_KEY) || "{}");
-            users[candidate.email] = candidate;
-            localStorage.setItem(USER_KEY, JSON.stringify(users));
-        }
-
         const EXAM_DATA = {
-            1: { title: "1st line engineering exam", icon: "cpu", description: "Assessment of initial technical aptitude, internal hardware components, and fundamental support logic.", objectives: ["Diagnostics", "OS Navigation", "Basic Networking", "Peripheral Support"], passScore: 80, questions: [{ id: 1, text: "Which component is often referred to as the 'brain' of the computer?", options: ["RAM", "Hard Drive", "CPU", "Power Supply"], correct: 2 }, { id: 2, text: "What does RAM stand for?", options: ["Random Access Memory", "Readily Available Memory", "Remote Access Module", "Rapid Analysis Method"], correct: 0 }, { id: 3, text: "Which of these is a common operating system developed by Microsoft?", options: ["macOS", "Linux", "Windows", "Android"], correct: 2 }, { id: 4, text: "What is the primary function of a GPU?", options: ["Storing files", "Processing graphics/images", "Connecting to the internet", "Managing power"], correct: 1 }, { id: 5, text: "Which port is most commonly used to connect a mouse or keyboard today?", options: ["VGA", "Serial", "USB", "Parallel"], correct: 2 }, { id: 6, text: "What is the standard shortcut to 'Copy' text in Windows?", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], correct: 2 }, { id: 7, text: "Which of these is considered 'volatile' memory?", options: ["SSD", "RAM", "Hard Drive", "USB Flash Drive"], correct: 1 }, { id: 8, text: "What does 'WWW' stand for in a web address?", options: ["World Wide Web", "Web Wide World", "Western Web Wireless", "Whole Wide Web"], correct: 0 }, { id: 9, text: "Which device is used to connect multiple computers in a local network?", options: ["Modem", "Switch", "Monitor", "Printer"], correct: 1 }, { id: 10, text: "What is the main purpose of a 'Firewall'?", options: ["Speeding up the internet", "Cooling the CPU", "Blocking unauthorized access", "Cleaning the keyboard"], correct: 2 }, { id: 11, text: "What file extension is typically used for a compressed folder?", options: [".exe", ".zip", ".txt", ".mp3"], correct: 1 }, { id: 12, text: "Which of these is an input device?", options: ["Monitor", "Speaker", "Printer", "Scanner"], correct: 3 }, { id: 13, text: "What does SSD stand for?", options: ["Solid State Drive", "Super Speed Disk", "System Storage Device", "Secure Static Drive"], correct: 0 }, { id: 14, text: "In computing, what is 1 Terabyte equal to?", options: ["100 Megabytes", "1000 Gigabytes", "10 Gigabytes", "1,000,000 Bytes"], correct: 1 }, { id: 15, text: "What should you do first if a computer peripheral stops working?", options: ["Buy a new computer", "Check the cable connection", "Reinstall Windows", "Call the manufacturer"], correct: 1 }] },
+            1: { title: "1st line engineering exam", icon: "cpu", description: "Assessment of initial technical aptitude, internal hardware components, and core desktop support logic.", objectives: ["Hardware Diagnostics", "OS Navigation", "Basic Networking", "Peripheral Support"], passScore: 80, questions: [{ id: 1, text: "Which component is often referred to as the 'brain' of the computer?", options: ["RAM", "Hard Drive", "CPU", "Power Supply"], correct: 2 }, { id: 2, text: "What does RAM stand for?", options: ["Random Access Memory", "Readily Available Memory", "Remote Access Module", "Rapid Analysis Method"], correct: 0 }, { id: 3, text: "Which of these is a common operating system developed by Microsoft?", options: ["macOS", "Linux", "Windows", "Android"], correct: 2 }, { id: 4, text: "What is the primary function of a GPU?", options: ["Storing files", "Processing graphics/images", "Connecting to the internet", "Managing power"], correct: 1 }, { id: 5, text: "Which port is most commonly used to connect a mouse or keyboard today?", options: ["VGA", "Serial", "USB", "Parallel"], correct: 2 }, { id: 6, text: "What is the standard shortcut to 'Copy' text in Windows?", options: ["Ctrl + V", "Ctrl + X", "Ctrl + C", "Ctrl + Z"], correct: 2 }, { id: 7, text: "Which of these is considered 'volatile' memory?", options: ["SSD", "RAM", "Hard Drive", "USB Flash Drive"], correct: 1 }, { id: 8, text: "What does 'WWW' stand for in a web address?", options: ["World Wide Web", "Web Wide World", "Western Web Wireless", "Whole Wide Web"], correct: 0 }, { id: 9, text: "Which device is used to connect multiple computers in a local network?", options: ["Modem", "Switch", "Monitor", "Printer"], correct: 1 }, { id: 10, text: "What is the main purpose of a 'Firewall'?", options: ["Speeding up the internet", "Cooling the CPU", "Blocking unauthorized access", "Cleaning the keyboard"], correct: 2 }, { id: 11, text: "What file extension is typically used for a compressed folder?", options: [".exe", ".zip", ".txt", ".mp3"], correct: 1 }, { id: 12, text: "Which of these is an input device?", options: ["Monitor", "Speaker", "Printer", "Scanner"], correct: 3 }, { id: 13, text: "What does SSD stand for?", options: ["Solid State Drive", "Super Speed Disk", "System Storage Device", "Secure Static Drive"], correct: 0 }, { id: 14, text: "In computing, what is 1 Terabyte equal to?", options: ["100 Megabytes", "1000 Gigabytes", "10 Gigabytes", "1,000,000 Bytes"], correct: 1 }, { id: 15, text: "What should you do first if a computer peripheral stops working?", options: ["Buy a new computer", "Check the cable connection", "Reinstall Windows", "Call the manufacturer"], correct: 1 }] },
             2: { title: "2nd line engineering exam", icon: "network", description: "Intermediate evaluation focusing on complex networking concepts and advanced security.", objectives: ["IP Subnetting", "DNS/DHCP Config", "Security Protocols", "Server Support"], passScore: 80, questions: [{ id: 1, text: "What protocol is used to securely browse the web?", options: ["HTTP", "FTP", "HTTPS", "SMTP"], correct: 2 }, { id: 2, text: "What is the purpose of DNS (Domain Name System)?", options: ["Sending emails", "Mapping domain names to IP addresses", "Securing wifi passwords", "Allocating RAM"], correct: 1 }, { id: 3, text: "Which IP address is typically used as a 'Loopback' address?", options: ["192.168.1.1", "127.0.0.1", "10.0.0.1", "8.8.8.8"], correct: 1 }, { id: 4, text: "What does DHCP stand for?", options: ["Dynamic Host Configuration Protocol", "Data Handling Center Protocol", "Direct Hyperlink Connection Port", "Digital Host Control Process"], correct: 0 }, { id: 5, text: "Which layer of the OSI model is responsible for routing data packets?", options: ["Physical", "Data Link", "Network", "Transport"], correct: 2 }, { id: 6, text: "What is 'Phishing'?", options: ["Upgrading server hardware", "Fraudulent attempts to obtain sensitive info", "Speeding up a network switch", "Testing network cables"], correct: 1 }, { id: 7, text: "Which of these is a cloud computing service from Amazon?", options: ["Azure", "AWS", "Google Cloud", "iCloud"], correct: 1 }, { id: 8, text: "What is the default port for HTTP?", options: ["21", "25", "80", "443"], correct: 2 }, { id: 9, text: "A 'VPN' is primarily used to:", options: ["Watch movies", "Create a secure, encrypted connection", "Fix broken hardware", "Increase monitor resolution"], correct: 1 }, { id: 10, text: "Which command in Windows allows you to see your IP configuration?", options: ["ipconfig", "ifconfig", "netstat", "ping"], correct: 0 }, { id: 11, text: "What does 'SaaS' stand for?", options: ["Storage as a Service", "System as a Service", "Software as a Service", "Security as a Service"], correct: 2 }, { id: 12, text: "Which type of malware self-replicates and spreads across a network?", options: ["Trojan", "Spyware", "Worm", "Adware"], correct: 2 }, { id: 13, text: "What is the maximum speed of a standard Cat5e cable?", options: ["100 Mbps", "1 Gbps", "10 Gbps", "100 Gbps"], correct: 1 }, { id: 14, text: "What does 'Ping' test?", options: ["Web browser speed", "Connectivity between two network nodes", "CPU temperature", "Database integrity"], correct: 1 }, { id: 15, text: "In RAID 1, what happens to the data?", options: ["It is striped across drives", "It is mirrored across drives", "It is deleted automatically", "It is compressed"], correct: 1 }] },
-            3: { title: "3rd line and escalations exam", icon: "award", description: "Expert assessment regarding enterprise-grade infrastructure and complex architecture.", objectives: ["Topology", "AES Standards", "Disaster Recovery", "Cloud Architecture"], passScore: 80, questions: [{ id: 1, text: "Which of these is a symmetric encryption algorithm?", options: ["RSA", "ECC", "AES", "Diffie-Hellman"], correct: 2 }, { id: 2, text: "In the context of Docker, what is a 'Container'?", options: ["A hardware server", "A lightweight, standalone executable package", "A physical shipping unit", "A type of database"], correct: 1 }, { id: 3, text: "What is 'Zero Trust' architecture?", options: ["A network with no security", "Assuming every access request is a threat", "Only trusting local employees", "Removing all firewalls"], correct: 1 }, { id: 4, text: "Which protocol is used for managing and monitoring network devices?", options: ["SNMP", "BGP", "SSH", "ICMP"], correct: 0 }, { id: 5, text: "What is a 'Brute Force' attack?", options: ["Physically breaking a server", "Systematically trying all possible passwords", "Sending too many emails", "Cutting a fiber optic cable"], correct: 1 }, { id: 6, text: "In SQL, what does the 'JOIN' clause do?", options: ["Deletes two tables", "Combines rows from two or more tables", "Creates a new database", "Restarts the server"], correct: 1 }, { id: 7, text: "What is 'Latent Semantic Indexing' used for?", options: ["Network routing", "Search engine optimization/data retrieval", "Hard drive formatting", "CPU overclocking"], correct: 1 }, { id: 8, text: "Which port does SSH use by default?", options: ["21", "22", "23", "25"], correct: 1 }, { id: 9, text: "What is the 'Blue Screen of Death' (BSOD) usually an indicator of?", options: ["A software update is ready", "A critical system error or hardware failure", "The monitor is broken", "The internet is disconnected"], correct: 1 }, { id: 10, text: "What does 'IOPS' measure?", options: ["Internet Output Per Second", "Input/Output Operations Per Second", "Internal Operating Processing System", "Integrated Optical Power System"], correct: 1 }, { id: 11, text: "What is the primary difference between IPv4 and IPv6?", options: ["Speed", "Number of available addresses", "The type of cables used", "Security levels"], correct: 1 }, { id: 12, text: "Which of these is a 'Type 1' Hypervisor?", options: ["Oracle VirtualBox", "VMware ESXi", "VMware Workstation", "Microsoft Virtual PC"], correct: 1 }, { id: 13, text: "What is a 'Salting' in the context of password security?", options: ["Adding random data to a password before hashing", "Storing passwords in plain text", "Sharing passwords with admins", "Changing passwords every day"], correct: 0 }, { id: 14, text: "In BGP (Border Gateway Protocol), what is an 'Autonomous System'?", options: ["A self-driving server", "A collection of IP prefixes under one entity", "A computer with no OS", "An AI-managed router"], correct: 1 }, { id: 15, text: "What is 'DDoS'?", options: ["Distributed Denial of Service", "Data Delivery over System", "Direct Digital Operating System", "Dual Disk Operating System"], correct: 0 }] }
+            3: { title: "3rd line and escalations exam", icon: "award", description: "Advanced assessment regarding enterprise-grade infrastructure and complex architecture.", objectives: ["Topology", "AES Standards", "Disaster Recovery", "Cloud Architecture"], passScore: 80, questions: [{ id: 1, text: "Which of these is a symmetric encryption algorithm?", options: ["RSA", "ECC", "AES", "Diffie-Hellman"], correct: 2 }, { id: 2, text: "In the context of Docker, what is a 'Container'?", options: ["A hardware server", "A lightweight, standalone executable package", "A physical shipping unit", "A type of database"], correct: 1 }, { id: 3, text: "What is 'Zero Trust' architecture?", options: ["A network with no security", "Assuming every access request is a threat", "Only trusting local employees", "Removing all firewalls"], correct: 1 }, { id: 4, text: "Which protocol is used for managing and monitoring network devices?", options: ["SNMP", "BGP", "SSH", "ICMP"], correct: 0 }, { id: 5, text: "What is a 'Brute Force' attack?", options: ["Physically breaking a server", "Systematically trying all possible passwords", "Sending too many emails", "Cutting a fiber optic cable"], correct: 1 }, { id: 6, text: "In SQL, what does the 'JOIN' clause do?", options: ["Deletes two tables", "Combines rows from two or more tables", "Creates a new database", "Restarts the server"], correct: 1 }, { id: 7, text: "What is 'Latent Semantic Indexing' used for?", options: ["Network routing", "Search engine optimization/data retrieval", "Hard drive formatting", "CPU overclocking"], correct: 1 }, { id: 8, text: "Which port does SSH use by default?", options: ["21", "22", "23", "25"], correct: 1 }, { id: 9, text: "What is the 'Blue Screen of Death' (BSOD) usually an indicator of?", options: ["A software update is ready", "A critical system error or hardware failure", "The monitor is broken", "The internet is disconnected"], correct: 1 }, { id: 10, text: "What does 'IOPS' measure?", options: ["Internet Output Per Second", "Input/Output Operations Per Second", "Internal Operating Processing System", "Integrated Optical Power System"], correct: 1 }, { id: 11, text: "What is the primary difference between IPv4 and IPv6?", options: ["Speed", "Number of available addresses", "The type of cables used", "Security levels"], correct: 1 }, { id: 12, text: "Which of these is a 'Type 1' Hypervisor?", options: ["Oracle VirtualBox", "VMware ESXi", "VMware Workstation", "Microsoft Virtual PC"], correct: 1 }, { id: 13, text: "What is a 'Salting' in the context of password security?", options: ["Adding random data to a password before hashing", "Storing passwords in plain text", "Sharing passwords with admins", "Changing passwords every day"], correct: 0 }, { id: 14, text: "In BGP (Border Gateway Protocol), what is an 'Autonomous System'?", options: ["A self-driving server", "A collection of IP prefixes under one entity", "A computer with no OS", "An AI-managed router"], correct: 1 }, { id: 15, text: "What is 'DDoS'?", options: ["Distributed Denial of Service", "Data Delivery over System", "Direct Digital Operating System", "Dual Disk Operating System"], correct: 0 }] }
         };
 
         let state = { userInfo: { name: '', email: '' }, completedLevels: [], activeLevelId: null, currentQuestionIndex: 0, answers: {} };
 
+        // --- Core Functions ---
         window.switchView = function(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(`view-${viewId}`).classList.add('active');
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) target.classList.add('active');
             const nav = document.getElementById('global-nav');
             if (viewId === 'registration' || viewId === 'processing') nav.classList.add('hidden');
             else nav.classList.remove('hidden');
@@ -243,6 +257,10 @@
         window.showDashboard = function() {
             const list = document.getElementById('level-list'); list.innerHTML = '';
             const urlParams = new URLSearchParams(window.location.search);
+            
+            // Progression Logic: 
+            // 1. Level 1 is always visible.
+            // 2. Others visible if in completedLevels OR URL param level=X matches.
             const queryLevel = parseInt(urlParams.get('level')) || 1;
             const visibleLevels = new Set([1, queryLevel, ...state.completedLevels]);
 
@@ -252,7 +270,7 @@
                 const card = document.createElement('div');
                 card.className = `group relative overflow-hidden rounded-[3.5rem] border-2 transition-all duration-500 p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white border-slate-200 shadow-sm hover:shadow-2xl hover:border-arc-teal cursor-pointer fade-in`;
                 card.onclick = () => window.showIntro(id);
-                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 ${isCompleted ? 'bg-emerald-100 text-emerald-600 shadow-lg' : 'bg-arc-blue/5 text-arc-blue shadow-lg'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div class="text-left"><h2 class="text-5xl font-black text-slate-900 tracking-tighter text-left leading-tight">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium leading-relaxed">${level.description}</p></div></div><div class="flex items-center gap-4 text-left"><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform">${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div></div>${isCompleted ? '<div class="absolute top-0 right-0 bg-emerald-500 text-white text-[11px] font-black uppercase px-12 py-4 rounded-bl-[2.5rem] tracking-widest shadow-lg">Verified</div>' : ''}`;
+                card.innerHTML = `<div class="flex items-center gap-12 text-left"><div class="w-28 h-28 rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 ${isCompleted ? 'bg-emerald-100 text-emerald-600 shadow-lg' : 'bg-arc-blue/5 text-arc-blue shadow-lg'}"><i data-lucide="${isCompleted ? 'check-circle' : level.icon}" class="w-14 h-14 stroke-[2.5px]"></i></div><div class="text-left"><h2 class="text-5xl font-black text-slate-900 tracking-tighter leading-tight">${level.title}</h2><p class="text-xl mt-3 max-w-3xl text-slate-500 font-medium leading-relaxed text-left text-left text-left">${level.description}</p></div></div><div class="flex items-center gap-4 text-left"><div class="flex items-center gap-3 ${isCompleted ? 'text-emerald-600' : 'text-arc-blue'} font-black uppercase tracking-[0.3em] text-[11px] group-hover:translate-x-4 transition-transform text-left text-left text-left text-left">${isCompleted ? 'Module Log Found' : 'Launch Module'} <i data-lucide="arrow-right" class="w-6 h-6"></i></div></div>${isCompleted ? '<div class="absolute top-0 right-0 bg-emerald-500 text-white text-[11px] font-black uppercase px-12 py-4 rounded-bl-[2.5rem] tracking-widest shadow-lg text-left text-left">Verified</div>' : ''}`;
                 list.appendChild(card);
             });
             window.switchView('dashboard');
@@ -260,7 +278,7 @@
 
         window.showIntro = (id) => {
             state.activeLevelId = id; const level = EXAM_DATA[id]; const isCompleted = state.completedLevels.includes(id);
-            document.getElementById('intro-content').innerHTML = `<div class="flex items-center gap-6 mb-12 text-left"><span class="bg-arc-blue text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.4em] shadow-xl">Protocol Stream</span>${isCompleted ? `<span class="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-3 shadow-lg"><i data-lucide="check-circle" class="w-5 h-5"></i> Entry Logged</span>` : ''}</div><h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter leading-none text-left">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium text-left max-w-4xl">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24 text-left"><div class="space-y-10"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="target" class="text-arc-blue w-8 h-8"></i> Module Syllabus</h3><ul class="space-y-6">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl text-left"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0 shadow-lg"></div> ${obj}</li>`).join('')}</ul></div><div class="space-y-10 text-left"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="shield-check" class="text-arc-blue w-8 h-8"></i> Notice</h3><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-2xl text-left"><p class="text-lg text-slate-500 italic leading-loose font-medium text-left">Progress authenticated against ID ${state.userInfo.email}.</p></div></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue transition-all shadow-2xl flex items-center justify-center gap-6 group text-center"><i data-lucide="${isCompleted ? 'refresh-cw' : 'zap'}" class="w-10 h-10 group-hover:rotate-12 transition-transform"></i> ${isCompleted ? 'Re-attempt Logic' : 'Initiate Module'}</button>`;
+            document.getElementById('intro-content').innerHTML = `<div class="flex items-center gap-6 mb-12 text-left"><span class="bg-arc-blue text-white px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-[0.4em] shadow-xl">Protocol Stream</span>${isCompleted ? `<span class="bg-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-3 shadow-lg shadow-emerald-50"><i data-lucide="check-circle" class="w-5 h-5"></i> Entry Logged</span>` : ''}</div><h1 class="text-7xl font-black text-slate-900 mb-12 tracking-tighter leading-none text-left">${level.title}</h1><p class="text-3xl text-slate-500 mb-20 leading-relaxed font-medium text-left max-w-4xl">${level.description}</p><div class="grid md:grid-cols-2 gap-16 mb-24 text-left text-left"><div class="space-y-10 text-left"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="target" class="text-arc-blue w-8 h-8 text-left"></i> Module Syllabus</h3><ul class="space-y-6 text-left">${level.objectives.map(obj => `<li class="flex items-start gap-5 text-slate-600 font-bold text-xl text-left"><div class="w-4 h-4 bg-arc-teal rounded-full mt-2 shrink-0 shadow-lg text-left"></div> ${obj}</li>`).join('')}</ul></div><div class="space-y-10 text-left"><h3 class="flex items-center gap-4 font-black text-slate-900 uppercase tracking-widest text-sm border-b-8 border-arc-blue/10 pb-6 text-left"><i data-lucide="shield-check" class="text-arc-blue w-8 h-8"></i> Security Notice</h3><div class="bg-slate-50 rounded-[3.5rem] p-12 border-2 border-white shadow-2xl text-left"><p class="text-lg text-slate-500 italic leading-loose font-medium text-left">Session authenticated against candidate ID ${state.userInfo.email}.</p></div></div></div><button onclick="window.startExam()" class="w-full bg-slate-900 text-white py-10 rounded-[2.5rem] text-4xl font-black hover:bg-arc-blue transition-all shadow-2xl flex items-center justify-center gap-6 group text-center"><i data-lucide="${isCompleted ? 'refresh-cw' : 'zap'}" class="w-10 h-10 group-hover:rotate-12 transition-transform text-center text-center"></i> ${isCompleted ? 'Re-attempt Logic' : 'Initiate Module'}</button>`;
             window.switchView('intro');
         };
 
@@ -276,7 +294,7 @@
                 const btn = document.createElement('button');
                 btn.className = `group w-full text-left p-12 rounded-[2.5rem] border-2 transition-all flex items-center justify-between ${state.answers[state.currentQuestionIndex] === i ? 'border-arc-blue bg-arc-blue/5 scale-[0.98]' : 'border-slate-100 hover:border-arc-teal bg-white shadow-xl shadow-slate-200/20'}`;
                 btn.onclick = () => { state.answers[state.currentQuestionIndex] = i; renderQuestion(); };
-                btn.innerHTML = `<span class="text-3xl font-bold ${state.answers[state.currentQuestionIndex] === i ? 'text-arc-blue' : 'text-slate-700'} text-left">${opt}</span><div class="w-12 h-12 rounded-full border-4 flex items-center justify-center shrink-0 ${state.answers[state.currentQuestionIndex] === i ? 'border-arc-blue bg-arc-blue' : 'border-slate-300'}">${state.answers[state.currentQuestionIndex] === i ? '<div class="w-5 h-5 bg-white rounded-full"></div>' : ''}</div>`;
+                btn.innerHTML = `<span class="text-3xl font-bold ${state.answers[state.currentQuestionIndex] === i ? 'text-arc-blue' : 'text-slate-700'} text-left">${opt}</span><div class="w-12 h-12 rounded-full border-4 flex items-center justify-center shrink-0 ${state.answers[state.currentQuestionIndex] === i ? 'border-arc-blue bg-arc-blue text-left' : 'border-slate-300 group-hover:border-arc-teal text-left'}">${state.answers[state.currentQuestionIndex] === i ? '<div class="w-5 h-5 bg-white rounded-full shadow-lg"></div>' : ''}</div>`;
                 box.appendChild(btn);
             });
             const nextBtn = document.getElementById('next-btn');
@@ -298,8 +316,9 @@
             const passed = percentage >= level.passScore;
 
             setTimeout(() => {
-                // SAVE TO LOCAL STORAGE
-                saveResult({
+                // Save Result for Admin
+                const results = JSON.parse(localStorage.getItem("ARC_EXAM_RESULTS") || "[]");
+                results.push({
                     candidateName: state.userInfo.name,
                     candidateEmail: state.userInfo.email,
                     levelId: levelId,
@@ -309,23 +328,30 @@
                     details: detailLogs,
                     passed: passed
                 });
+                localStorage.setItem("ARC_EXAM_RESULTS", JSON.stringify(results));
 
                 if (passed) {
                     if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId);
-                    saveCandidate({ name: state.userInfo.name, email: state.userInfo.email, completedLevels: state.completedLevels });
+                    const users = JSON.parse(localStorage.getItem("ARC_CANDIDATE_PROGRESS") || "{}");
+                    users[state.userInfo.email] = { name: state.userInfo.name, email: state.userInfo.email, completedLevels: state.completedLevels };
+                    localStorage.setItem("ARC_CANDIDATE_PROGRESS", JSON.stringify(users));
                 }
                 window.switchView('success');
             }, 1500);
         }
 
-        window.handleLogin = (e) => {
-            e.preventDefault();
+        // --- HANDLER TO PREVENT URL ? REDIRECT ---
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // This is the fix for the redirection issue
             const btn = document.getElementById('reg-submit-btn');
             btn.disabled = true;
+
             state.userInfo.name = document.getElementById('user-name').value.trim();
             state.userInfo.email = document.getElementById('user-email').value.trim().toLowerCase();
-            
-            const saved = getCandidate(state.userInfo.email);
+
+            // Load Progress
+            const users = JSON.parse(localStorage.getItem("ARC_CANDIDATE_PROGRESS") || "{}");
+            const saved = users[state.userInfo.email];
             if (saved) state.completedLevels = saved.completedLevels || [];
             
             document.getElementById('display-name').textContent = state.userInfo.name;
@@ -335,14 +361,18 @@
             document.getElementById('nav-user-initial').textContent = state.userInfo.name[0].toUpperCase();
             document.getElementById('candidate-footer-name').textContent = state.userInfo.name;
             
-            setTimeout(() => { window.showDashboard(); btn.disabled = false; }, 600);
-        };
+            setTimeout(() => { 
+                window.showDashboard(); 
+                btn.disabled = false; 
+            }, 600);
+        });
 
         window.addEventListener('click', function(e) {
             const dropdown = document.getElementById('user-dropdown');
             const navBtn = document.querySelector('nav .relative button');
             if (dropdown && !dropdown.contains(e.target) && navBtn && !navBtn.contains(e.target)) dropdown.classList.remove('show');
         });
+        
         lucide.createIcons();
     </script>
 </body>
