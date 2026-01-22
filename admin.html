@@ -89,8 +89,19 @@
         }
 
         function openModal(index) {
-            document.getElementById('modal-content').innerText = records[index].details || "No technical breakdown available.";
+            const data = records[index];
+            const contentContainer = document.getElementById('modal-content');
+            const rawContent = data.details || "No technical breakdown available.";
+            
+            // Convert text URLs into clickable links for the admin
+            const linkedContent = rawContent.replace(
+                /(https?:\/\/[^\s]+)/g, 
+                '<a href="$1" target="_blank" class="text-blue-600 underline font-black">$1</a>'
+            );
+            
+            contentContainer.innerHTML = linkedContent; 
             document.getElementById('details-modal').classList.add('active');
+            lucide.createIcons();
         }
         function closeModal() { document.getElementById('details-modal').classList.remove('active'); }
         window.onload = fetchData;
