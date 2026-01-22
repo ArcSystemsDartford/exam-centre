@@ -75,12 +75,12 @@
 
         <div class="max-w-7xl mx-auto w-full p-8 flex-1 text-left">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 text-left">
-                <div class="text-left">
+                <div class="text-left text-left">
                     <h1 class="text-5xl font-black text-slate-900 tracking-tighter">Candidate Log</h1>
-                    <p class="text-slate-400 mt-2 font-medium">Synchronizing live records from Google Sheets.</p>
+                    <p class="text-slate-400 mt-2 font-medium">Synchronizing live records from Google Sheets database.</p>
                 </div>
-                <button onclick="window.fetchResults()" id="sync-btn" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-arc-dark transition-all shadow-lg flex items-center gap-2">
-                    <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i> <span id="sync-text">Sync Stream</span>
+                <button onclick="window.fetchResults()" id="sync-btn" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-arc-dark transition-all shadow-lg flex items-center gap-2 text-center text-center">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-center" id="sync-icon"></i> <span id="sync-text">Sync Stream</span>
                 </button>
             </div>
 
@@ -88,7 +88,7 @@
                 <!-- Feed -->
                 <div class="lg:col-span-3 space-y-4">
                     <div id="submissions-list" class="space-y-4 text-left">
-                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 flex flex-col items-center gap-4">
+                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 flex flex-col items-center gap-4 text-center">
                             <div class="w-12 h-12 border-4 border-arc-blue/10 border-t-arc-blue rounded-full animate-spin"></div>
                             <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Initializing cloud sync...</p>
                         </div>
@@ -98,7 +98,7 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28 text-left">
-                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left font-bold tracking-[0.2em]">Live Status</h3>
+                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left font-bold tracking-[0.2em]">Summary</h3>
                         <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 mb-8 text-left">
                             <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 text-left">Total Records</p>
                             <p id="stat-total" class="text-4xl font-black text-arc-blue text-left">0</p>
@@ -134,12 +134,12 @@
 
     <script>
         const AUTH_KEY = "A2c5ySt3m5ExamR35u1ts";
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYyFFfpUeSJh0t9YvxKtQCyKSKQjUd0UJqa5EBVo-UT7vigh6xOyBCft-oEvKFWL9M/exec";
+        // Updated URL provided by the user
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3wnjHgNcFEGPtu-qxkPgP8nMVLkUUDBTqp-KBCkGm6tkkWiCwpajuOLOe5zEBe5al/exec";
 
         window.checkAdmin = function() {
             const passInput = document.getElementById('admin-pass');
             const pass = passInput.value.trim();
-            const loginBtn = document.getElementById('login-btn');
             
             if (pass === AUTH_KEY) {
                 document.getElementById('view-login').style.display = 'none';
@@ -163,8 +163,10 @@
             if (syncText) syncText.textContent = "Syncing...";
             
             try {
-                // Fetch with a cache-buster to ensure we don't get old results
-                const response = await fetch(SCRIPT_URL + '?t=' + Date.now());
+                // Fetch with cache buster to bypass browser caching of redirects
+                const response = await fetch(SCRIPT_URL + (SCRIPT_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), {
+                    method: 'GET'
+                });
                 
                 if (!response.ok) throw new Error('Cloud response was not OK');
                 
@@ -178,17 +180,13 @@
             } catch (err) {
                 console.error("Cloud fetch failed:", err);
                 list.innerHTML = `
-                    <div class="text-center py-20 bg-white rounded-[2rem] border border-red-100 flex flex-col items-center gap-6">
-                        <div class="bg-red-50 p-6 rounded-full text-red-500">
-                            <i data-lucide="cloud-off" class="w-12 h-12"></i>
+                    <div class="text-center py-20 bg-white rounded-[2rem] border border-red-100 flex flex-col items-center gap-6 text-center">
+                        <div class="bg-red-50 p-6 rounded-full text-red-500 text-center text-center"><i data-lucide="cloud-off" class="w-12 h-12 text-center text-center"></i></div>
+                        <div class="space-y-2 text-center text-center">
+                            <p class="text-red-500 font-bold uppercase text-xs tracking-widest text-center text-center">Connection Sync Error</p>
+                            <p class="text-slate-400 text-sm max-w-xs mx-auto text-center text-center text-center">Unable to reach Google Sheets. Please ensure your script is deployed to "Anyone".</p>
                         </div>
-                        <div class="space-y-2">
-                            <p class="text-red-500 font-bold uppercase text-xs tracking-widest">Connection Error</p>
-                            <p class="text-slate-400 text-sm max-w-xs mx-auto">Unable to reach Google Sheets. Please ensure your script is deployed to "Anyone".</p>
-                        </div>
-                        <button onclick="window.fetchResults()" class="bg-slate-100 text-slate-600 px-8 py-3 rounded-xl font-black text-xs uppercase hover:bg-slate-200 transition-all">
-                            Retry Connection
-                        </button>
+                        <button onclick="window.fetchResults()" class="bg-slate-100 text-slate-600 px-8 py-3 rounded-xl font-black text-xs uppercase hover:bg-slate-200 transition-all text-center">Retry Connection</button>
                     </div>`;
                 lucide.createIcons();
             } finally {
@@ -203,8 +201,8 @@
             
             if (data.length === 0) {
                 list.innerHTML = `
-                    <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100">
-                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No records found in cloud database.</p>
+                    <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-center">
+                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs text-center">No local candidate records found in cloud.</p>
                     </div>`;
                 return;
             }
@@ -212,14 +210,16 @@
             data.forEach((res, idx) => {
                 const isPassed = res.status === 'PASSED';
                 const currentLevelId = res.levelTitle.includes("1st") ? 1 : res.levelTitle.includes("2nd") ? 2 : 3;
-                const authLink = `https://arcsystemsdartford.github.io/exam-centre/?level=${currentLevelId + 1}`;
+                // Build relative URL based on current host
+                const baseUrl = window.location.href.split('admin')[0];
+                const authLink = `${baseUrl}?level=${currentLevelId + 1}`;
                 
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all flex justify-between items-center group text-left";
                 card.innerHTML = `
                     <div class="flex items-center gap-6 text-left">
-                        <div class="w-16 h-16 rounded-2xl ${isPassed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
-                            <i data-lucide="${isPassed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
+                        <div class="w-16 h-16 rounded-2xl ${isPassed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0 text-center">
+                            <i data-lucide="${isPassed ? 'check-circle' : 'x-circle'}" class="w-8 h-8 text-center text-center"></i>
                         </div>
                         <div class="text-left">
                             <h4 class="text-lg font-black text-slate-800 leading-tight">${res.candidateName || 'Unknown'}</h4>
@@ -228,15 +228,15 @@
                     </div>
                     <div class="text-right flex items-center gap-10">
                         <div class="hidden md:block text-right">
-                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">${res.levelTitle || 'Assessment'}</p>
-                            <p class="text-2xl font-black ${isPassed ? 'text-emerald-600' : 'text-slate-900'}">${res.score || '0%'}</p>
+                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle || 'Assessment'}</p>
+                            <p class="text-2xl font-black ${isPassed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score || '0%'}</p>
                         </div>
-                        <div class="flex gap-2">
-                            <button class="view-btn bg-slate-50 text-slate-500 p-3 rounded-xl hover:bg-arc-blue hover:text-white transition-all">
-                                <i data-lucide="eye" class="w-5 h-5"></i>
+                        <div class="flex gap-2 text-right text-right">
+                            <button class="view-btn bg-slate-50 text-slate-500 p-3 rounded-xl hover:bg-arc-blue hover:text-white transition-all text-center">
+                                <i data-lucide="eye" class="w-5 h-5 text-center text-center"></i>
                             </button>
                             ${isPassed && currentLevelId < 3 ? `
-                                <button onclick="window.copyAuthLink('${authLink}', ${currentLevelId + 1})" class="bg-arc-blue text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-arc-dark shadow-md whitespace-nowrap">
+                                <button onclick="window.copyAuthLink('${authLink}', ${currentLevelId + 1})" class="bg-arc-blue text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-arc-dark shadow-md whitespace-nowrap text-center text-center">
                                     Authorize Tier ${currentLevelId + 1}
                                 </button>
                             ` : ''}
@@ -274,26 +274,24 @@
                             </div>`;
                     }
                 } catch(e) {
-                    breakdownHtml = '<p class="text-slate-400 italic text-xs">Full breakdown data available in the Google Sheet.</p>';
+                    breakdownHtml = '<p class="text-slate-400 italic text-xs">Breakdown data format issue. View raw in Google Sheet.</p>';
                 }
-            } else {
-                breakdownHtml = '<p class="text-slate-400 italic text-xs">Breakdown data not included in this record.</p>';
             }
 
             content.innerHTML = `
                 <div class="grid grid-cols-2 gap-6 text-left">
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Final Status</p>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest font-bold">Status</p>
                         <p class="text-2xl font-black ${res.status === 'PASSED' ? 'text-emerald-500' : 'text-red-500'}">${res.status || 'FAILED'}</p>
                     </div>
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
-                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Logged Score</p>
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest font-bold">Score</p>
                         <p class="text-2xl font-black text-slate-900">${res.score || '0%'}</p>
                     </div>
                 </div>
                 <div class="p-6 bg-arc-blue/5 rounded-3xl border-2 border-arc-blue/10">
                     <p class="text-[10px] font-black uppercase text-arc-blue mb-1">Module Title</p>
-                    <p class="text-lg font-bold">${res.levelTitle || 'General Assessment'}</p>
+                    <p class="text-lg font-bold">${res.levelTitle || 'Assessment'}</p>
                     <p class="text-[10px] text-slate-400 mt-2 uppercase font-bold tracking-tight">${res.timestamp || 'No Date'}</p>
                 </div>
                 ${breakdownHtml}
@@ -309,7 +307,7 @@
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            alert("Authorized progression link for Tier " + nextTier + " copied to clipboard! Send this to the candidate.");
+            alert("Authorized progression link for Tier " + nextTier + " copied to clipboard! Send this URL to the candidate.");
         };
 
         window.closeModal = () => document.getElementById('detail-modal').classList.add('hidden');
