@@ -13,35 +13,97 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .view { display: none; } .view.active { display: block; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .view { display: none; } .view.active { display: flex; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen selection:bg-arc-teal">
 
+    <!-- Login View -->
     <div id="view-login" class="view active min-h-screen flex items-center justify-center bg-arc-dark p-6 text-center">
-        <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center">
+        <div class="max-w-md w-full bg-white rounded-[2.5rem] p-12 shadow-2xl text-center fade-in">
             <img src="arc.jpg" alt="Logo" class="h-20 mx-auto mb-10" onerror="this.src='https://placehold.co/200x80?text=Arc+Systems'">
-            <h1 class="text-2xl font-black text-slate-800 uppercase mb-8 text-center">Admin Access</h1>
-            <input type="password" id="admin-pass" placeholder="Authorization Key" onkeydown="if(event.key === 'Enter') checkAdmin()" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg mb-6">
-            <button onclick="checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-widest shadow-xl">Enter Hub</button>
-            <p id="err" class="text-red-500 text-xs mt-4 font-bold hidden">Invalid Key</p>
+            <h1 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-wider text-center">Admin Access</h1>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-8 text-center">Secure Hub</p>
+            
+            <div class="space-y-6">
+                <input type="password" id="admin-pass" placeholder="Authorization Key" 
+                       onkeydown="if(event.key === 'Enter') window.checkAdmin()" 
+                       class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all">
+                <button onclick="window.checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-widest shadow-xl shadow-arc-blue/20">
+                    Enter Dashboard
+                </button>
+                <p id="err" class="text-red-500 text-xs font-black uppercase tracking-tighter hidden flex items-center justify-center gap-2 text-center">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-center"></i> Invalid Access Key
+                </p>
+            </div>
         </div>
     </div>
 
-    <div id="view-dashboard" class="view min-h-screen flex flex-col">
+    <!-- Dashboard View -->
+    <div id="view-dashboard" class="view min-h-screen flex-col">
         <nav class="bg-white border-b border-slate-100 px-8 py-5 flex justify-between items-center sticky top-0 z-50 shadow-sm text-left">
-            <div class="flex items-center gap-4 text-left"><img src="arc.jpg" alt="Logo" class="h-8"><span class="text-arc-blue font-black uppercase text-[10px]">Admin Hub</span></div>
-            <button onclick="location.reload()" class="bg-slate-50 px-4 py-2 rounded-xl text-slate-400 hover:text-red-500 font-bold text-xs text-center">Sign Out</button>
+            <div class="flex items-center gap-4 text-left">
+                <img src="arc.jpg" alt="Logo" class="h-8" onerror="this.src='https://placehold.co/100x40?text=Arc'">
+                <div class="h-5 w-[1px] bg-slate-200"></div>
+                <span class="text-arc-blue font-black uppercase text-[10px] tracking-widest">Administrative Hub</span>
+            </div>
+            <button onclick="location.reload()" class="bg-slate-50 px-4 py-2 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all font-bold text-xs text-center">Sign Out</button>
         </nav>
+
         <div class="max-w-7xl mx-auto w-full p-8 flex-1 text-left">
-            <div class="flex justify-between items-center mb-12 text-left">
-                <h1 class="text-5xl font-black text-slate-900 tracking-tighter text-left">Candidate Log</h1>
-                <button onclick="fetchResults()" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs uppercase hover:bg-arc-dark shadow-lg flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4 text-center"></i> Sync Cloud</button>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 text-left">
+                <div class="text-left">
+                    <h1 class="text-5xl font-black text-slate-900 tracking-tighter text-left leading-tight">Candidate Log</h1>
+                    <p class="text-slate-400 mt-2 font-medium text-left">Live synchronization with Google Sheets database.</p>
+                </div>
+                <button onclick="window.fetchResults()" id="sync-btn" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs uppercase hover:bg-arc-dark shadow-lg flex items-center gap-2 transition-all">
+                    <i data-lucide="refresh-cw" class="w-4 h-4 text-center"></i> Sync Stream
+                </button>
             </div>
-            <div id="list" class="space-y-4 text-left">
-                <div class="text-center py-20 text-slate-400 font-bold uppercase text-xs">Waiting for cloud data...</div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 text-left">
+                <!-- Main Feed -->
+                <div class="lg:col-span-3 space-y-4 text-left">
+                    <div id="list" class="space-y-4 text-left">
+                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">Initializing cloud stream...</div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6 text-left">
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28 text-left">
+                        <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left">Summary</h3>
+                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 mb-8 text-left">
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 text-left">Total Records</p>
+                            <p id="stat-total" class="text-4xl font-black text-arc-blue text-left">0</p>
+                        </div>
+                        <div class="space-y-4 text-left text-left">
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest text-left font-bold">Admin Portal Directs</p>
+                            <a href="mailto:adam.ayliffe@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline text-left">Adam Ayliffe (Tech Eng)</a>
+                            <a href="mailto:daniel.muckle@arcsystems.co.uk" class="block text-[11px] font-bold text-arc-blue hover:underline text-left">Daniel Muckle (SDM)</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Result Detail Modal -->
+    <div id="detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6 text-left">
+        <div class="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] fade-in text-left">
+            <div class="p-10 border-b border-slate-50 flex justify-between items-start bg-slate-50/50 text-left">
+                <div class="text-left">
+                    <h2 id="modal-name" class="text-3xl font-black text-slate-900 tracking-tight text-left">Candidate Name</h2>
+                    <p id="modal-email" class="text-xs font-bold text-arc-blue uppercase tracking-widest mt-3 text-left">email@example.com</p>
+                </div>
+                <button onclick="window.closeModal()" class="bg-white p-2 rounded-xl text-slate-300 hover:text-red-500 transition-all text-center">
+                    <i data-lucide="x" class="w-6 h-6 text-center"></i>
+                </button>
+            </div>
+            <div id="modal-content" class="p-10 overflow-y-auto space-y-8 text-left"></div>
         </div>
     </div>
 
@@ -49,47 +111,139 @@
         const AUTH_KEY = "A2c5ySt3m5ExamR35u1ts";
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYyFFfpUeSJh0t9YvxKtQCyKSKQjUd0UJqa5EBVo-UT7vigh6xOyBCft-oEvKFWL9M/exec";
 
-        function checkAdmin() {
-            if (document.getElementById('admin-pass').value.trim() === AUTH_KEY) {
-                document.getElementById('view-login').style.display = 'none';
-                document.getElementById('view-dashboard').style.display = 'block';
-                fetchResults();
+        window.checkAdmin = function() {
+            const pass = document.getElementById('admin-pass').value.trim();
+            if (pass === AUTH_KEY) {
+                document.getElementById('view-login').classList.remove('active');
+                document.getElementById('view-dashboard').classList.add('active');
+                window.fetchResults();
             } else {
-                document.getElementById('err').style.display = 'block';
-                setTimeout(() => document.getElementById('err').style.display = 'none', 3000);
+                const err = document.getElementById('err');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 3000);
             }
-        }
+        };
 
-        async function fetchResults() {
+        window.fetchResults = async function() {
             const list = document.getElementById('list');
+            const syncBtn = document.getElementById('sync-btn');
+            if (syncBtn) syncBtn.classList.add('animate-spin');
+            
             try {
                 const response = await fetch(SCRIPT_URL);
                 const data = await response.json();
                 render(data.reverse());
             } catch (err) {
-                list.innerHTML = '<div class="text-center py-20 text-red-400 font-bold uppercase text-xs">Cloud Access Error. Check Google Apps Script doGet().</div>';
+                list.innerHTML = '<div class="text-center py-20 text-red-400 font-bold uppercase text-xs bg-white rounded-[2rem] border border-red-50">Cloud Access Error. Check Google Apps Script Deployment.</div>';
+            } finally {
+                if (syncBtn) syncBtn.classList.remove('animate-spin');
             }
         }
 
         function render(data) {
-            const list = document.getElementById('list'); list.innerHTML = '';
-            if (data.length === 0) { list.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold uppercase text-xs">No records found.</div>'; return; }
-            data.forEach(res => {
+            const list = document.getElementById('list');
+            document.getElementById('stat-total').textContent = data.length;
+            list.innerHTML = '';
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase text-xs">No records found.</div>';
+                return;
+            }
+
+            data.forEach((res, idx) => {
+                const isPassed = res.status === 'PASSED';
                 const levelId = res.levelTitle.includes("1st") ? 1 : res.levelTitle.includes("2nd") ? 2 : 3;
                 const nextLink = `https://arcsystemsdartford.github.io/exam-centre/?level=${levelId + 1}`;
+                
                 const card = document.createElement('div');
-                card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg flex justify-between items-center group text-left";
-                card.innerHTML = `<div class="flex items-center gap-6 text-left"><div class="w-12 h-12 rounded-xl ${res.status === 'PASSED' ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0"><i data-lucide="${res.status === 'PASSED' ? 'check-circle' : 'x-circle'}" class="w-6 h-6"></i></div><div><h4 class="text-lg font-black text-slate-800">${res.candidateName}</h4><p class="text-xs font-bold text-slate-400">${res.candidateEmail}</p></div></div><div class="flex items-center gap-10 text-right"><div><p class="text-[9px] font-black uppercase text-slate-400 mb-1">${res.levelTitle}</p><p class="text-xl font-black ${res.status === 'PASSED' ? 'text-emerald-600' : 'text-slate-900'}">${res.score}</p></div><button onclick="copyLink('${nextLink}')" class="bg-arc-blue text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-arc-dark shadow-md">Copy Link</button></div>`;
+                card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all flex justify-between items-center group text-left";
+                card.innerHTML = `
+                    <div class="flex items-center gap-6 text-left">
+                        <div class="w-16 h-16 rounded-2xl ${isPassed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
+                            <i data-lucide="${isPassed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
+                        </div>
+                        <div class="text-left text-left">
+                            <h4 class="text-lg font-black text-slate-800 leading-tight text-left">${res.candidateName}</h4>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5 text-left">${res.candidateEmail}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex items-center gap-10 text-right">
+                        <div class="hidden md:block text-right">
+                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1 text-right">${res.levelTitle}</p>
+                            <p class="text-2xl font-black ${isPassed ? 'text-emerald-600' : 'text-slate-900'} text-right">${res.score}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="view-btn bg-slate-100 text-slate-600 w-12 h-12 rounded-xl flex items-center justify-center hover:bg-arc-blue hover:text-white transition-all">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </button>
+                            ${isPassed && levelId < 3 ? `
+                                <button onclick="window.copyLink('${nextLink}')" class="bg-arc-blue text-white px-4 py-2 rounded-xl font-black text-[9px] uppercase hover:bg-arc-dark shadow-md">Copy Link</button>
+                            ` : ''}
+                        </div>
+                    </div>`;
+                
+                card.querySelector('.view-btn').onclick = () => window.viewDetails(res);
                 list.appendChild(card);
             });
             lucide.createIcons();
         }
 
-        function copyLink(link) {
-            const el = document.createElement('textarea'); el.value = link; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
-            alert("Link copied! Send to candidate to authorize Level " + link.slice(-1));
+        window.viewDetails = function(res) {
+            const content = document.getElementById('modal-content');
+            document.getElementById('modal-name').textContent = res.candidateName;
+            document.getElementById('modal-email').textContent = res.candidateEmail;
+
+            let breakdownHtml = '';
+            try {
+                const details = JSON.parse(res.details);
+                breakdownHtml = details.map(log => `
+                    <div class="p-5 rounded-3xl border-2 ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/20' : 'border-red-100 bg-red-50/20'} text-left">
+                        <p class="text-sm font-bold text-slate-800 mb-2 leading-tight text-left">${log.q}</p>
+                        <div class="flex items-center gap-2 text-left">
+                            <span class="text-[9px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'} text-left">${log.status}</span>
+                            <span class="text-xs font-semibold text-slate-600 text-left">Selected: ${log.a}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                breakdownHtml = '<p class="text-slate-400 italic">Breakdown data unavailable for this record.</p>';
+            }
+
+            content.innerHTML = `
+                <div class="grid grid-cols-2 gap-6 text-left text-left">
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner text-left text-left">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left">Status</p>
+                        <p class="text-2xl font-black ${res.status === 'PASSED' ? 'text-emerald-500' : 'text-red-500'} text-left text-left">${res.status}</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner text-left text-left">
+                        <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest text-left">Score</p>
+                        <p class="text-2xl font-black text-slate-900 text-left text-left">${res.score}</p>
+                    </div>
+                </div>
+                <div class="space-y-4 text-left">
+                    <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em] text-left">Question Breakdown</p>
+                    <div class="space-y-3 text-left">
+                        ${breakdownHtml}
+                    </div>
+                </div>
+            `;
+            document.getElementById('detail-modal').classList.remove('hidden');
+            lucide.createIcons();
         }
 
+        window.closeModal = () => document.getElementById('detail-modal').classList.add('hidden');
+
+        window.copyLink = function(link) {
+            const el = document.createElement('textarea');
+            el.value = link;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("Progression link copied to clipboard.");
+        }
+
+        // Initialize icons
         lucide.createIcons();
     </script>
 </body>
