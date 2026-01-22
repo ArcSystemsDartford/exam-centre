@@ -49,7 +49,7 @@
                 <input type="password" id="admin-pass" placeholder="Authorization Key" 
                        onkeydown="if(event.key === 'Enter') window.checkAdmin()"
                        class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl py-5 px-6 focus:outline-none focus:border-arc-blue font-bold text-center text-lg transition-all placeholder:text-slate-300">
-                <button onclick="window.checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl active:scale-[0.98]">
+                <button id="login-btn" onclick="window.checkAdmin()" class="w-full bg-arc-blue text-white py-5 rounded-2xl font-black hover:bg-arc-dark transition-all uppercase tracking-[0.2em] shadow-xl active:scale-[0.98]">
                     Enter Dashboard
                 </button>
                 <p id="err" class="text-red-500 text-xs font-black uppercase tracking-tighter hidden flex items-center justify-center gap-2 text-center">
@@ -77,10 +77,10 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 text-left">
                 <div class="text-left">
                     <h1 class="text-5xl font-black text-slate-900 tracking-tighter">Candidate Log</h1>
-                    <p class="text-slate-400 mt-2 font-medium">Synchronizing records from central Google Sheets database.</p>
+                    <p class="text-slate-400 mt-2 font-medium">Synchronizing live records from Google Sheets.</p>
                 </div>
                 <button onclick="window.fetchResults()" id="sync-btn" class="bg-arc-blue text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-arc-dark transition-all shadow-lg flex items-center gap-2">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Sync Stream
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="sync-icon"></i> <span id="sync-text">Sync Stream</span>
                 </button>
             </div>
 
@@ -88,7 +88,10 @@
                 <!-- Feed -->
                 <div class="lg:col-span-3 space-y-4">
                     <div id="submissions-list" class="space-y-4 text-left">
-                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">Initializing cloud sync...</div>
+                        <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 flex flex-col items-center gap-4">
+                            <div class="w-12 h-12 border-4 border-arc-blue/10 border-t-arc-blue rounded-full animate-spin"></div>
+                            <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Initializing cloud sync...</p>
+                        </div>
                     </div>
                 </div>
 
@@ -97,7 +100,7 @@
                     <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm sticky top-28 text-left">
                         <h3 class="font-black uppercase tracking-widest text-[10px] text-slate-400 mb-8 border-b border-slate-50 pb-4 text-left font-bold tracking-[0.2em]">Live Status</h3>
                         <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 mb-8 text-left">
-                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 text-left">Total Submissions</p>
+                            <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1 text-left">Total Records</p>
                             <p id="stat-total" class="text-4xl font-black text-arc-blue text-left">0</p>
                         </div>
                         <div class="space-y-4 text-left">
@@ -134,7 +137,10 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYyFFfpUeSJh0t9YvxKtQCyKSKQjUd0UJqa5EBVo-UT7vigh6xOyBCft-oEvKFWL9M/exec";
 
         window.checkAdmin = function() {
-            const pass = document.getElementById('admin-pass').value.trim();
+            const passInput = document.getElementById('admin-pass');
+            const pass = passInput.value.trim();
+            const loginBtn = document.getElementById('login-btn');
+            
             if (pass === AUTH_KEY) {
                 document.getElementById('view-login').style.display = 'none';
                 document.getElementById('view-dashboard').style.display = 'flex';
@@ -143,26 +149,50 @@
             } else {
                 const err = document.getElementById('err');
                 err.classList.remove('hidden');
-                setTimeout(() => err.classList.add('hidden'), 3000);
+                passInput.value = '';
+                setTimeout(() => { if(err) err.classList.add('hidden'); }, 3000);
             }
         };
 
         window.fetchResults = async function() {
             const list = document.getElementById('submissions-list');
-            const syncBtn = document.getElementById('sync-btn');
-            if (syncBtn) syncBtn.querySelector('i').classList.add('animate-spin');
+            const syncIcon = document.getElementById('sync-icon');
+            const syncText = document.getElementById('sync-text');
+            
+            if (syncIcon) syncIcon.classList.add('animate-spin');
+            if (syncText) syncText.textContent = "Syncing...";
             
             try {
-                const response = await fetch(SCRIPT_URL);
+                // Fetch with a cache-buster to ensure we don't get old results
+                const response = await fetch(SCRIPT_URL + '?t=' + Date.now());
+                
+                if (!response.ok) throw new Error('Cloud response was not OK');
+                
                 const data = await response.json();
+                
+                if (!Array.isArray(data)) throw new Error('Invalid data format received');
+                
                 renderResults(data.reverse());
+                
+                if (syncText) syncText.textContent = "Sync Stream";
             } catch (err) {
+                console.error("Cloud fetch failed:", err);
                 list.innerHTML = `
-                    <div class="text-center py-20 text-red-400 font-bold uppercase text-xs bg-white rounded-[2rem] border border-red-50">
-                        Cloud Connection Error. Ensure your Apps Script doGet() is active.
+                    <div class="text-center py-20 bg-white rounded-[2rem] border border-red-100 flex flex-col items-center gap-6">
+                        <div class="bg-red-50 p-6 rounded-full text-red-500">
+                            <i data-lucide="cloud-off" class="w-12 h-12"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-red-500 font-bold uppercase text-xs tracking-widest">Connection Error</p>
+                            <p class="text-slate-400 text-sm max-w-xs mx-auto">Unable to reach Google Sheets. Please ensure your script is deployed to "Anyone".</p>
+                        </div>
+                        <button onclick="window.fetchResults()" class="bg-slate-100 text-slate-600 px-8 py-3 rounded-xl font-black text-xs uppercase hover:bg-slate-200 transition-all">
+                            Retry Connection
+                        </button>
                     </div>`;
+                lucide.createIcons();
             } finally {
-                if (syncBtn) syncBtn.querySelector('i').classList.remove('animate-spin');
+                if (syncIcon) syncIcon.classList.remove('animate-spin');
             }
         };
 
@@ -172,7 +202,10 @@
             list.innerHTML = '';
             
             if (data.length === 0) {
-                list.innerHTML = '<div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100 text-slate-400 font-bold uppercase tracking-widest text-xs">No records found in cloud.</div>';
+                list.innerHTML = `
+                    <div class="text-center py-32 bg-white rounded-[2rem] border border-slate-100">
+                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No records found in cloud database.</p>
+                    </div>`;
                 return;
             }
 
@@ -190,13 +223,13 @@
                         </div>
                         <div class="text-left">
                             <h4 class="text-lg font-black text-slate-800 leading-tight">${res.candidateName || 'Unknown'}</h4>
-                            <p class="text-xs font-bold text-slate-400 mt-0.5">${res.candidateEmail}</p>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5">${res.candidateEmail || 'No email'}</p>
                         </div>
                     </div>
                     <div class="text-right flex items-center gap-10">
                         <div class="hidden md:block text-right">
-                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">${res.levelTitle}</p>
-                            <p class="text-2xl font-black ${isPassed ? 'text-emerald-600' : 'text-slate-900'}">${res.score}</p>
+                            <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">${res.levelTitle || 'Assessment'}</p>
+                            <p class="text-2xl font-black ${isPassed ? 'text-emerald-600' : 'text-slate-900'}">${res.score || '0%'}</p>
                         </div>
                         <div class="flex gap-2">
                             <button class="view-btn bg-slate-50 text-slate-500 p-3 rounded-xl hover:bg-arc-blue hover:text-white transition-all">
@@ -222,42 +255,46 @@
             document.getElementById('modal-email').textContent = res.candidateEmail;
 
             let breakdownHtml = '';
-            try {
-                // The portal stringifies details into the Sheet
-                const details = JSON.parse(res.details);
-                breakdownHtml = `
-                    <div class="space-y-3">
-                        <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em]">Detailed Breakdown</p>
-                        ${details.map(log => `
-                            <div class="p-4 rounded-2xl border-2 ${log.status === 'Correct' ? 'border-emerald-50 bg-emerald-50/20' : 'border-red-50 bg-red-50/20'} text-left">
-                                <p class="text-sm font-bold text-slate-800 mb-1">${log.q}</p>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[9px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'}">${log.status}</span>
-                                    <span class="text-xs font-semibold text-slate-600">Selected: ${log.a}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } catch(e) {
-                breakdownHtml = '<p class="text-slate-400 italic">No question-level breakdown available for this record.</p>';
+            if (res.details) {
+                try {
+                    const details = typeof res.details === 'string' ? JSON.parse(res.details) : res.details;
+                    if (Array.isArray(details)) {
+                        breakdownHtml = `
+                            <div class="space-y-3">
+                                <p class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 pb-2 tracking-[0.3em]">Detailed Breakdown</p>
+                                ${details.map(log => `
+                                    <div class="p-4 rounded-2xl border-2 ${log.status === 'Correct' ? 'border-emerald-50 bg-emerald-50/20' : 'border-red-50 bg-red-50/20'} text-left">
+                                        <p class="text-sm font-bold text-slate-800 mb-1">${log.q || 'Question'}</p>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[9px] font-black uppercase ${log.status === 'Correct' ? 'text-emerald-500' : 'text-red-500'}">${log.status || 'Result'}</span>
+                                            <span class="text-xs font-semibold text-slate-600">Selected: ${log.a || 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>`;
+                    }
+                } catch(e) {
+                    breakdownHtml = '<p class="text-slate-400 italic text-xs">Full breakdown data available in the Google Sheet.</p>';
+                }
+            } else {
+                breakdownHtml = '<p class="text-slate-400 italic text-xs">Breakdown data not included in this record.</p>';
             }
 
             content.innerHTML = `
                 <div class="grid grid-cols-2 gap-6 text-left">
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
                         <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Final Status</p>
-                        <p class="text-2xl font-black ${res.status === 'PASSED' ? 'text-emerald-500' : 'text-red-500'}">${res.status}</p>
+                        <p class="text-2xl font-black ${res.status === 'PASSED' ? 'text-emerald-500' : 'text-red-500'}">${res.status || 'FAILED'}</p>
                     </div>
                     <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100 shadow-inner">
                         <p class="text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Logged Score</p>
-                        <p class="text-2xl font-black text-slate-900">${res.score}</p>
+                        <p class="text-2xl font-black text-slate-900">${res.score || '0%'}</p>
                     </div>
                 </div>
                 <div class="p-6 bg-arc-blue/5 rounded-3xl border-2 border-arc-blue/10">
                     <p class="text-[10px] font-black uppercase text-arc-blue mb-1">Module Title</p>
-                    <p class="text-lg font-bold">${res.levelTitle}</p>
-                    <p class="text-[10px] text-slate-400 mt-2 uppercase font-bold">${res.timestamp}</p>
+                    <p class="text-lg font-bold">${res.levelTitle || 'General Assessment'}</p>
+                    <p class="text-[10px] text-slate-400 mt-2 uppercase font-bold tracking-tight">${res.timestamp || 'No Date'}</p>
                 </div>
                 ${breakdownHtml}
             `;
@@ -272,8 +309,6 @@
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            
-            // Custom friendly alert
             alert("Authorized progression link for Tier " + nextTier + " copied to clipboard! Send this to the candidate.");
         };
 
