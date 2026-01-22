@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arc Systems Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { arc: { blue: '#004a99', teal: '#38b6ff', dark: '#002d5e' } } } }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .view { display: none; } .view.active { display: block; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <!-- Login View -->
+    <div id="view-login" class="view active min-h-screen flex items-center justify-center bg-arc-dark p-6">
+        <div class="max-w-md w-full bg-white rounded-3xl p-10 shadow-2xl text-center">
+            <img src="arc.jpg" alt="Logo" class="h-16 mx-auto mb-8">
+            <h1 class="text-2xl font-black text-slate-800 mb-6 uppercase tracking-wider">Admin Access</h1>
+            <input type="password" id="admin-pass" placeholder="Authorization Key" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-4 px-6 mb-6 focus:outline-none focus:border-arc-blue font-bold text-center">
+            <button onclick="checkAdmin()" class="w-full bg-arc-blue text-white py-4 rounded-xl font-black hover:bg-arc-dark transition-all uppercase tracking-widest">Enter Dashboard</button>
+            <p id="login-err" class="text-red-500 text-xs mt-4 font-bold hidden">Invalid Access Key</p>
+        </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="view-dashboard" class="view min-h-screen">
+        <nav class="bg-white border-b border-slate-100 px-8 py-5 flex justify-between items-center sticky top-0 z-50">
+            <div class="flex items-center gap-4">
+                <img src="arc.jpg" alt="Logo" class="h-8">
+                <div class="h-5 w-[1px] bg-slate-200"></div>
+                <span class="text-arc-blue font-black uppercase tracking-widest text-[10px]">Administrative Hub</span>
+            </div>
+            <button onclick="location.reload()" class="bg-slate-50 p-2 rounded-lg text-slate-400 hover:text-arc-blue transition-colors"><i data-lucide="log-out" class="w-5 h-5"></i></button>
+        </nav>
+
+        <div class="max-w-7xl mx-auto p-8">
+            <div class="flex justify-between items-center mb-10">
+                <h1 class="text-4xl font-black text-slate-900 tracking-tight">Candidate Submissions</h1>
+                <div class="flex items-center gap-4">
+                    <span id="sync-status" class="flex items-center gap-2 text-xs font-bold text-emerald-500 uppercase tracking-widest">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Live Sync Active
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Feed -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div id="submissions-list" class="space-y-4">
+                        <div class="text-center py-20 text-slate-400 font-bold">Waiting for candidates...</div>
+                    </div>
+                </div>
+
+                <!-- Stats/Help -->
+                <div class="space-y-8">
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                        <h3 class="font-black uppercase tracking-widest text-xs text-slate-400 mb-6">Management Utility</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-6">Use this portal to monitor candidate performance across all three engineering modules.</p>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl">
+                                <span class="text-xs font-bold uppercase text-slate-500">Total Entries</span>
+                                <span id="stat-total" class="text-lg font-black text-arc-blue">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Detail -->
+    <div id="detail-modal" class="hidden fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+                <div>
+                    <h2 id="modal-name" class="text-2xl font-black text-slate-900">...</h2>
+                    <p id="modal-email" class="text-xs font-bold text-slate-400 uppercase tracking-widest">...</p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-300 hover:text-red-500 transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            </div>
+            <div id="modal-content" class="p-8 overflow-y-auto space-y-6"></div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'it-exam-portal-arc';
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function checkAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'arc123') { // Simple key for the dashboard
+                document.getElementById('view-login').classList.remove('active');
+                document.getElementById('view-dashboard').classList.add('active');
+                initDashboard();
+            } else {
+                document.getElementById('login-err').classList.remove('hidden');
+            }
+        }
+
+        async function initDashboard() {
+            lucide.createIcons();
+            await firebase.auth().signInAnonymously();
+            
+            db.collection('artifacts').doc(appId).collection('public').doc('data').collection('submissions')
+              .onSnapshot(snap => {
+                  const list = document.getElementById('submissions-list');
+                  const countEl = document.getElementById('stat-total');
+                  list.innerHTML = '';
+                  
+                  const docs = snap.docs.sort((a, b) => b.data().timestamp?.seconds - a.data().timestamp?.seconds);
+                  countEl.textContent = docs.length;
+
+                  if (docs.length === 0) {
+                      list.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">No submissions found.</div>';
+                      return;
+                  }
+
+                  docs.forEach(doc => {
+                      const data = doc.data();
+                      const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'Processing...';
+                      const card = document.createElement('div');
+                      card.className = "bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-all flex justify-between items-center";
+                      card.innerHTML = `
+                          <div class="flex items-center gap-5">
+                              <div class="w-14 h-14 rounded-2xl ${data.passed ? 'bg-emerald-50 text-emerald-500' : 'bg-red-50 text-red-500'} flex items-center justify-center shrink-0">
+                                  <i data-lucide="${data.passed ? 'check-circle' : 'x-circle'}" class="w-8 h-8"></i>
+                              </div>
+                              <div>
+                                  <h4 class="font-black text-slate-800">${data.candidateName}</h4>
+                                  <p class="text-xs font-bold text-slate-400 truncate max-w-[200px]">${data.candidateEmail}</p>
+                              </div>
+                          </div>
+                          <div class="text-right flex items-center gap-8">
+                              <div>
+                                  <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest">${data.levelTitle}</p>
+                                  <p class="text-xl font-black ${data.passed ? 'text-emerald-600' : 'text-slate-900'}">${data.score}%</p>
+                              </div>
+                              <button onclick='viewDetails(${JSON.stringify(data).replace(/'/g, "&apos;")})' class="bg-arc-blue text-white p-3 rounded-xl hover:bg-arc-dark transition-all shadow-lg shadow-arc-blue/20">
+                                  <i data-lucide="eye" class="w-5 h-5"></i>
+                              </button>
+                          </div>
+                      `;
+                      list.appendChild(card);
+                  });
+                  lucide.createIcons();
+              });
+        }
+
+        function viewDetails(data) {
+            document.getElementById('modal-name').textContent = data.candidateName;
+            document.getElementById('modal-email').textContent = data.candidateEmail;
+            const content = document.getElementById('modal-content');
+            
+            const baseUrl = "https://arcsystemsdartford.github.io/exam-centre/";
+            const nextLink = `${baseUrl}?level=${data.levelId + 1}`;
+
+            content.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Status</p>
+                        <p class="text-lg font-black ${data.passed ? 'text-emerald-500' : 'text-red-500'}">${data.passed ? 'PASSED' : 'FAILED'}</p>
+                    </div>
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
+                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Time</p>
+                        <p class="text-xs font-bold text-slate-600">${new Date(data.timestamp.seconds * 1000).toLocaleString()}</p>
+                    </div>
+                </div>
+
+                ${data.passed && data.levelId < 3 ? `
+                    <div class="p-6 bg-arc-blue/5 rounded-3xl border-2 border-arc-blue/10">
+                        <p class="text-xs font-black text-arc-blue uppercase tracking-widest mb-3">Copy Next Step Link</p>
+                        <div class="flex gap-2">
+                            <input readonly value="${nextLink}" class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-mono w-full text-slate-500">
+                            <button onclick="copyLink('${nextLink}')" class="bg-arc-blue text-white px-4 py-2 rounded-xl font-bold text-xs shrink-0 hover:bg-arc-dark transition-all">Copy</button>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="space-y-3">
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Question Breakdown</p>
+                    <div class="space-y-3">
+                        ${data.details.map(log => `
+                            <div class="p-4 rounded-2xl border ${log.status === 'Correct' ? 'border-emerald-100 bg-emerald-50/30' : 'border-red-100 bg-red-50/30'}">
+                                <p class="text-sm font-bold text-slate-800 mb-1">${log.q}</p>
+                                <p class="text-xs font-medium ${log.status === 'Correct' ? 'text-emerald-600' : 'text-red-600'}">Answered: ${log.a}</p>
+                                ${log.status !== 'Correct' ? `<p class="text-[10px] text-slate-400 mt-1">Correct was: ${log.correctVal}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('detail-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+        function copyLink(link) {
+            const el = document.createElement('textarea');
+            el.value = link;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            alert("Link copied to clipboard. You can now send this to the candidate.");
+        }
+    </script>
+</body>
+</html>
